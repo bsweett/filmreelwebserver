@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<!-- http://struts.apache.org/2.x/docs/hello-world-using-struts-2.html -->
+
+<struts>
+	<!-- http://struts.apache.org/2.0.11/docs/devmode.html-->
+	<constant name="struts.devMode" value="true" />
+	<constant name="struts.custom.i18n.resources" value="global"/>
+
+	<package name="social-package" extends="struts-default">
+
+		<action name="index">
+			<result>pages/welcome/index.jsp</result>
+		</action>
+  		
+  		<action name="initial" class="com.class3601.social.actions.InitialTestAction" method="execute">
+    		<result name="success">pages/example/example-test.jsp</result>
+    		<result name="fail">pages/example/sample-errors.jsp</result>
+  		</action>
+  		
+  		<action name="login" class="com.class3601.social.actions.LoginAction" method="execute">
+    		<result name="success">pages/example/example-test.jsp</result>
+    		<result name="fail">pages/example/sample-errors.jsp</result>
+    		<result name="newuser">pages/example/example-new.jsp</result>
+  		</action>
+
+	</package>
+
+</struts>
