@@ -2,7 +2,11 @@ package com.models;
 
 
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -10,15 +14,16 @@ import com.common.Messages;
 
 public class User {
 	private String userIdPrimarKey;
-	private String name;
-	private String emailAddress;
-	private String password;
+	private byte[] token;
+	private byte[] name;
+	private byte[] emailAddress;
+	private byte[] password;
 	private Timestamp creationTimestamp;
 	private Timestamp lastUpdateTimestamp;
 	private Timestamp lastAccessedTimestamp;
-	private String location;
-	private String userBio;
-	private String imagePath;
+	private byte[] location;
+	private byte[] userBio;
+	private byte[] imagePath;
 	private int count;
 	private Set<User> friends = new HashSet<User>(0);
 
@@ -34,6 +39,7 @@ public class User {
 		setCreationTimestamp(new Timestamp(calendar.getTimeInMillis()));
 		setLastUpdateTimestamp(new Timestamp(calendar.getTimeInMillis()));
 		setLastAccessedTimestamp(new Timestamp(calendar.getTimeInMillis()));
+		setToken(Messages.UNKNOWN);
 	}
 
 	public Timestamp getCreationTimestamp() {
@@ -74,55 +80,104 @@ public class User {
 	}
 
 	public void setName(String name) {
+		this.name = name.getBytes();
+	}
+	
+	public void setName(byte[] name) {
 		this.name = name;
 	}
 
-	public String getName() {
+	public byte[] getName() {
 		return name;
+	}
+	
+	public String getNameToString() {
+		return new String(name);
 	}
 
 	public void setEmailAddress(String emailAddress) {
+		this.emailAddress = emailAddress.getBytes();
+	}
+	
+	public void setEmailAddress(byte[] emailAddress) {
 		this.emailAddress = emailAddress;
 	}
 
-	public String getEmailAddress() {
+	public byte[] getEmailAddress() {
 		return emailAddress;
+	}
+	
+	public String getEmailAddressToString() {
+		return new String(emailAddress);
 	}
 
 	public void setPassword(String password) {
+		this.password = password.getBytes();
+	}
+	
+	public void setPassword(byte[] password) {
 		this.password = password;
 	}
-
-	public String getPassword() {
+	
+	public byte[] getPassword() {
 		return password;
 	}
-
+	
+	public String getPasswordToString() {
+		return new String(password);
+	}
+	
 	public void setLocation(String location) {
-		this.location = location;
+		this.location = location.getBytes();
 	}
 
-	public String getLocation() {
+	public void setLocation(byte[] location) {
+		this.location = location;
+	}
+	
+	public byte[] getLocation() {
 		return location;
 	}
 	
+	public String getLocationToString() {
+		return new String(location);
+	}
+	
 	public void setUserBio(String userBio) {
+		this.userBio = userBio.getBytes();
+	}
+	
+	public void setUserBio(byte[] userBio) {
 		this.userBio = userBio;
 	}
-
-	public String getUserBio() {
+	
+	public byte[] getUserBio() {
 		return userBio;
 	}
 	
+	public String getUserBioToString() {
+		return new String(userBio);
+	}
+	
 	public void setImagePath(String imagePath) {
+		this.imagePath = imagePath.getBytes();
+	}
+	
+	public void setImagePath(byte[] imagePath) {
 		this.imagePath = imagePath;
 	}
 
-	public String getImagePath() {
+	public byte[] getImagePath() {
 		return imagePath;
+	}
+	
+	public String getImagePathToString() {
+		return new String(imagePath);
 	}
 
 	public void updateFromUser(User user) {
 		setUserIdPrimarKey(user.getUserIdPrimarKey());
+		user.updateToken(); 
 		setName(user.getName());
 		setEmailAddress(user.getEmailAddress());
 		setPassword(user.getPassword());
@@ -162,6 +217,62 @@ public class User {
 	
 	public void addFriend(User user){
 		getFriends().add(user);
+	}
+	
+	public void setToken(String token){
+		this.token = token.getBytes();
+	}
+	
+	public void setToken(byte[] token){
+		this.token = token;
+	}
+
+	public byte[] getToken() {
+		return token;
+	}
+	
+	public String getTokenToString() {
+		return new String(token);
+	}
+	
+	public void generateToken() {
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		Calendar calendar = Calendar.getInstance();
+		
+		this.setToken(this.getNameToString() + this.getPasswordToString() + "$" + dateFormat.format(calendar.getTime()));
+	}
+	
+	public void updateToken() {
+		this.setToken(this.getNameToString() + this.getPasswordToString() + "$" + this.timestampFromToken(this.getTokenToString()));
+	}
+	
+	public String timestampFromToken(String token) {
+		String[] str_array = token.split("\\$");
+		return str_array[1];
+	}
+	
+	//Have not tested this fully
+	public boolean isTokenValid(String token) {
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		Calendar currentCalendar = Calendar.getInstance();
+		Calendar tokenCalendar = Calendar.getInstance();
+		try {
+			Date tokenDate = dateFormat.parse(this.timestampFromToken(token));
+			tokenCalendar.setTime(tokenDate);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		currentCalendar.add(Calendar.HOUR_OF_DAY, -3);
+		
+		int result = tokenCalendar.getTime().compareTo(currentCalendar.getTime());
+		
+		if(result < 0) {
+			return false;
+		}
+		
+		else {
+			return true;
+		}
 	}
 	
 }

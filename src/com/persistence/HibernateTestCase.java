@@ -21,7 +21,16 @@ public class HibernateTestCase {
 		myuser.setImagePath("/null");
 		myuser.setLocation("Ottawa");
 		myuser.setUserBio("Just your everyday normal user object");
+		myuser.generateToken();
+		System.out.println("The token is: " + myuser.getTokenToString());
+		System.out.println("The timestamp is: " + myuser.timestampFromToken(myuser.getTokenToString()));
+		if(myuser.isTokenValid(myuser.getTokenToString()))
+			System.out.println("Token is good");	
 		manager.add(myuser);
+		
+		User newUser = manager.getUserByEmailAddress(myuser.getEmailAddress());
+		System.out.println("The users email is: " + newUser.getEmailAddressToString());
+		
 	}
 
 }

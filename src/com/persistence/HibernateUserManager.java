@@ -1,6 +1,23 @@
 package com.persistence;
 
+import static org.apache.commons.io.FileUtils.readFileToByteArray;
+import static org.apache.commons.io.FileUtils.writeByteArrayToFile;
+
+import java.io.File;
+import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.KeyGenerator;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
 //import org.apache.struts.action.ActionError;
 //import org.apache.struts.action.ActionErrors;
@@ -41,6 +58,8 @@ public class HibernateUserManager extends
 	private static String SELECT_USER_WITH_USER_PASSWORD = "from "
 			+ USER_CLASS_NAME
 			+ " as user where user.name = :username and user.password = :password";
+	private static String SELECT_USER_WITH_TOKEN = "from "
+			+ USER_CLASS_NAME + " as user where user.token = :token";
 	/* private static String DELETE_USER_WITH_PRIMARY_KEY = " delete from "
 			+ USER_CLASS_NAME + " as user where user.id = ?"; */
 	/* private static String SELECT_ALL_USER_EMAIL_ADDRESSES = "select user.emailAddress from "
@@ -56,7 +75,7 @@ public class HibernateUserManager extends
 		+ USER_CLASS_NAME;
 	
 	private static final String CREATE_TABLE_SQL = "create table " + USER_TABLE_NAME + "(USER_ID_PRIMARY_KEY char(36) primary key,"
-			+ "NAME tinytext, EMAIL_ADDRESS tinytext, PASSWORD tinytext, LOCATION tinytext, USERBIO text, IMAGEPATH tinytext, COUNT int,"
+			+ "TOKEN blob, NAME blob, EMAIL_ADDRESS blob, PASSWORD blob, LOCATION blob, USERBIO blob, IMAGEPATH blob, COUNT int,"
 			+ "CREATION_TIME timestamp, LAST_UPDATE_TIME timestamp, LAST_ACCESSED_TIME timestamp);";
 
 	private static final String CREATE_JOIN_TABLE_SQL = "create table " + USER_JOIN_TABLE_NAME + "(USER_ID char(36), FRIEND_USER_ID char(36));";
@@ -91,73 +110,9 @@ public class HibernateUserManager extends
 		HibernateUtil.executeSQLQuery(DROP_TABLE_SQL);
 		HibernateUtil.executeSQLQuery(DROP_JOIN_TABLE_SQL);
 		HibernateUtil.executeSQLQuery(CREATE_JOIN_TABLE_SQL);
+		//this.generateNewKey();
 		return HibernateUtil.executeSQLQuery(CREATE_TABLE_SQL);
 	}
-
-	/**
-	 * Adds given user to the database.
-	 * First checks if user exists based on the mobile phone number.
-	 * If it does then adds error to given actionErrors and skips adding the vendor.
-	 * Returns true if user is added successfully, otherwise returns false.
-	 * 
-	 * @param object
-	 * @param actionErrors
-	 * @return
-	
-	
-	public synchronized boolean add(Object object, ActionErrors actionErrors, ActionMessages actionMessages) {
-		int i;
-		String creditCardNumber, creditCardExpirationMonth, creditCardExpirationYear, creditCardType;
-		Transaction transaction = null;
-		Session session = null;
-		boolean encryptionDone = false;
-		User user = (User) object;
-		User userCopy = user.copy();
-		
-		HibernateDatabaseGatewayTagManagerResult tagResult; 
-
-		user.encryptPassword();
-		creditCardNumber = user.getCreditCardNumber();
-		creditCardExpirationMonth = user.getCreditCardExpirationMonth();
-		creditCardExpirationYear = user.getCreditCardExpirationYear();
-		creditCardType = user.getCreditCardType();
-		
-		user.setCreditCardNumber(Messages.EMPTY_STRING);
-		user.setCreditCardExpirationMonth(Messages.EMPTY_STRING);
-		user.setCreditCardExpirationYear(Messages.EMPTY_STRING);
-		user.setCreditCardCvv(Messages.EMPTY_STRING);
-		user.setCreditCardType(Messages.EMPTY_STRING);
-		encryptionDone = true;
-		
-		try {
-			session = HibernateUtil.getCurrentSession();
-			transaction = session.beginTransaction();
-			Query query = session.createQuery(SELECT_USER_WITH_PHONENUMBER);
-			query.setParameter(0, user.getPhoneNumber());
-			List<User> users = query.list();
-
-			if (!users.isEmpty()) {
-				actionErrors.add(ActionErrors.GLOBAL_ERROR, new ActionError( "error.userExists"));
-				return false;
-			}
-				
-			session.save(user);
-			transaction.commit();
-			return true;
-
-		} catch (HibernateException exception) {
-			actionErrors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
-					"error.addUserToDatabase"));
-			BookingLogger.getDefault().severe(this, Messages.METHOD_ADD_USER,
-					"error.addUserToDatabase", exception);
-
-			rollback(transaction);
-			return false;
-		} finally {
-			closeSession();
-		}
-	}
-	 */
 
 	/**
 	 * Adds given object (user) to the database 
@@ -167,13 +122,14 @@ public class HibernateUserManager extends
 		Session session = null;
 		User user = (User) object;
 		
+		//Encrpyt the users information
+		user = encryptUser(user);
+		
 		try {
 			session = HibernateUtil.getCurrentSession();
 			transaction = session.beginTransaction();
 			Query query = session.createQuery(SELECT_USER_WITH_EMAIL_ADDRESS);
-			System.out.println("not NULL:" +user.getEmailAddress());
-			query.setParameter("email", user.getEmailAddress());
-			System.out.println("BULL");
+		 	query.setParameter("email", user.getEmailAddress());
 			@SuppressWarnings("unchecked")
 			List<User> users = query.list();
 
@@ -204,6 +160,7 @@ public class HibernateUserManager extends
 	 * @return
 	 */
 	public synchronized boolean update(User user) {
+		user.updateToken();
 		boolean result = super.update(user);	
 		return result;
 	}
@@ -244,85 +201,6 @@ public class HibernateUserManager extends
 		}
 	}
 	
-	
-	/**
-	 * Deletes user with given id from the database.
-	 * Returns true if user deleted, otherwise return false.
-	 * Upon error adds specific error to given actionErrors.
-	 * 
-	 * @param id
-	 * @param actionErrors
-	 * @return
-	 
-	public synchronized boolean delete(String id, ActionErrors actionErrors) {
-		
-		Transaction transaction = null;
-		Session session = null;
-		
-		try {
-			session = HibernateUtil.getCurrentSession();
-			transaction = session.beginTransaction();
-			Query query = session.createQuery(DELETE_USER_WITH_PRIMARY_KEY);
-			query.setParameter(0, id);
-			int rowCount = query.executeUpdate();
-			transaction.commit();
-			if (rowCount > 0) {
-				return true;
-			} else {
-				return false;
-			}
-		} catch (HibernateException exception) {
-			actionErrors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
-					"error.addDeletingUserInDatabase"));
-			BookingLogger.getDefault().severe(this,
-					Messages.METHOD_DELETE_USER,
-					"error.addDeletingUserInDatabase", exception);
-
-			rollback(transaction);
-			return false;
-		} finally {
-			closeSession();
-		}
-	}
-	 */
-	
-	/**
-	 * Returns user from database based on given email address.
-	 * If not found returns null.
-	 * Upon error returns null.
-	 * 
-	 * @param emailAddress
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	public synchronized User getUserByEmailAddress(String emailAddress) {
-		
-		Session session = null;
-		Transaction transaction = null;
-		try {
-			session = HibernateUtil.getCurrentSession();
-			transaction = session.beginTransaction();
-			Query query = session.createQuery(SELECT_USER_WITH_EMAIL_ADDRESS);
-			query.setParameter("email", emailAddress);
-			List<User> users = query.list();
-			transaction.commit();
-
-			if (users.isEmpty()) {
-				return null;
-			} else {
-				User user = users.get(0);
-				return user;
-			}
-		} catch (HibernateException exception) {
-			BookingLogger.getDefault().severe(this,
-					Messages.METHOD_GET_USER_BY_EMAIL_ADDRESS,
-					"error.getUserByEmailAddressInDatabase", exception);
-			return null;
-		} finally {
-			closeSession();
-		}
-	}
-
 	/**
 	 * Returns user without decrypted credit card information, 
 	 * from database based on given Name.
@@ -350,12 +228,41 @@ public class HibernateUserManager extends
 				return null;
 			} else {
 				User user = users.get(0);
-				return user;
+				return decryptUser(user);
 			}
 		} catch (HibernateException exception) {
 			BookingLogger.getDefault().severe(this,
 					Messages.METHOD_GET_USER_BY_NAME,
 					"error.getUserByName", exception);
+			return null;
+		} finally {
+			closeSession();
+		} 
+	}
+	
+	@SuppressWarnings("unchecked")
+	public synchronized User getUserByEmailAddress(byte[] emailAddress) {
+		
+		Session session = null;
+		Transaction transaction = null;
+		try {
+			session = HibernateUtil.getCurrentSession();
+			transaction = session.beginTransaction();
+			Query query = session.createQuery(SELECT_USER_WITH_EMAIL_ADDRESS);
+			query.setParameter("email", emailAddress);
+			List<User> users = query.list();
+			transaction.commit();
+
+			if (users.isEmpty()) {
+				return null;
+			} else {
+				User user = users.get(0);
+				return decryptUser(user);
+			}
+		} catch (HibernateException exception) {
+			BookingLogger.getDefault().severe(this,
+					Messages.METHOD_GET_USER_BY_EMAIL_ADDRESS,
+					"error.getUserByEmailAddressInDatabase", exception);
 			return null;
 		} finally {
 			closeSession();
@@ -392,7 +299,7 @@ public class HibernateUserManager extends
 				return null;
 			} else {
 				User user = users.get(0);
-				return user;
+				return decryptUser(user);
 			}
 		} catch (HibernateException exception) {
 			BookingLogger.getDefault().severe(this,
@@ -401,170 +308,6 @@ public class HibernateUserManager extends
 			return null;
 		} finally {
 			closeSession();
-		}
-	}
-
-	/**
-	 * Returns user from the database with given id.
-	 * Upon exception returns null.
-	 * 
-	 * @param id
-	 * @return
-	 */
-	public synchronized User getUserById(String id) {
-		
-		Session session = null;
-		try {
-			session = HibernateUtil.getCurrentSession();
-			User user = (User) session.load(User.class, id);
-			return user;
-		} catch (HibernateException exception) {
-			BookingLogger.getDefault().severe(this,
-					Messages.METHOD_GET_USER_BY_ID, "error.getUserById",
-					exception);
-			return null;
-		} finally {
-			closeSession();
-		}
-	}
-
-	/**
-	 * Sets user in given form to the user found for form's email address and password.
-	 * Returns true if successful, otherwise return false.
-	 * 
-	 * @param userForm
-	 * @return
-	 
-	public synchronized boolean fillInFromEmailAddressAndPassword(
-			UserForm userForm) {
-		
-		User user = getUserByEmailAddress(userForm.getEmailAddress());
-		if ((user != null)
-				&& (user.getPassword().equals(userForm.getPassword()))) {
-			userForm.fillInFormWithUser(user);
-			return true;
-		} else {
-			return false;
-		}
-	}
-	 */
-	
-	/**
-	 * Sets user in given form to the user found for form's phone number and password.
-	 * Returns true if successful, otherwise return false.
-	 * 
-	 * @param userForm
-	 * @return
-	 
-	public synchronized boolean fillInFromPhoneNumberAndPassword(
-			UserForm userForm) {
-		
-		User user = getUserByPhonenumber(userForm.getPhoneNumber());
-		if ((user != null)
-				&& (user.getPassword().equals(userForm.getPassword()))) {
-			userForm.fillInFormWithUser(user);
-			return true;
-		} else {
-			return false;
-		}
-	}
-	 */
-	
-	/**
-	 * Sets user in given form to the user found for form's selected phone number.
-	 * Returns true if successful, otherwise return false.
-	 * 
-	 * @param userForm
-	 * @return
-	 
-	public synchronized boolean fillInFromSelectedPhoneNumber(
-			UserForm userForm) {
-		
-		User user = getUserByPhonenumber(userForm
-				.getSelectedPhoneNumber());
-		if (user != null) {
-			userForm.fillInFormWithUser(user);
-			return true;
-		} else {
-			return false;
-		}
-	}
-	 */
-	
-	/**
-	 * Sets user in given form to the user found for form's selected email address.
-	 * Returns true if successful, otherwise return false.
-	 * 
-	 * @param userForm
-	 * @return
-	 
-	public synchronized boolean fillInFromEmailAddress(UserForm userForm) {
-		
-		User user = getUserByEmailAddress(userForm
-				.getSelectedEmailAddress());
-		if (user != null) {
-			userForm.fillInFormWithUser(user);
-			return true;
-		} else {
-			return false;
-		}
-
-	}
-	 */
-	
-	/**
-	 * Sets email addresses in the given user form to email addresses found
-	 * in the user table.
-	 * 
-	 * @param userForm
-	 
-	@SuppressWarnings("unchecked")
-	public synchronized void fillInWithEmailAddresses(UserForm userForm) {
-		
-		Transaction transaction = null;
-		Session session = null;
-		try {
-			session = HibernateUtil.getCurrentSession();
-			transaction = session.beginTransaction();
-
-			Query query = session
-					.createQuery(SELECT_ALL_USER_EMAIL_ADDRESSES);
-			List<String> addresses = query.list();
-			transaction.commit();
-
-			Iterator<String> iterator = addresses.iterator();
-			Collection<String> collection = new ArrayList<String>(addresses
-					.size());
-			while (iterator.hasNext()) {
-				collection.add(iterator.next());
-			}
-			userForm.setEmailAddresses(collection);
-		} catch (HibernateException exception) {
-			BookingLogger.getDefault().severe(this,
-					Messages.METHOD_FILL_IN_WITH_EMAIL_ADDRESS,
-					"error.fillInWithEmailAddresses", exception);
-			rollback(transaction);
-		} finally {
-			closeSession();
-		}
-	}
-	 */
-	
-	/**
-	 * Returns user with given emailAddress and password from the database. 
-	 * If not found returns null.
-	 * 
-	 * @param emailAddress
-	 * @param password
-	 * @return
-	 */
-	public User getUser(String emailAddress, String password) {
-		
-		User user = getUserByEmailAddress(emailAddress);
-		if ((user != null) && (user.getPassword().equals(password))) {
-			return user;
-		} else {
-			return null;
 		}
 	}
 	
@@ -653,5 +396,140 @@ public class HibernateUserManager extends
 		} finally {
 			closeSession();
 		}
+	}
+	
+	public byte[] encrypt(byte[] textToEncrypt) {
+	 	
+		try {	
+			SecretKeySpec skeySpec = new SecretKeySpec(loadKey(), "AES");
+
+	        // build the initialization vector.  This example is all zeros, but it 
+	        // could be any value or generated using a random number generator.
+	        byte[] iv = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	        IvParameterSpec ivspec = new IvParameterSpec(iv);
+
+	        // initialize the cipher for encrypt mode
+	        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+	        cipher.init(Cipher.ENCRYPT_MODE, skeySpec, ivspec);
+
+	        // encrypt the message
+	        byte[] encrypted = cipher.doFinal(textToEncrypt);
+		    
+		    return encrypted;
+		    
+		}catch(NoSuchAlgorithmException e){
+			e.printStackTrace();
+		}catch(NoSuchPaddingException e){
+			e.printStackTrace();
+		}catch(InvalidKeyException e){
+			e.printStackTrace();
+		}catch(IllegalBlockSizeException e){
+			e.printStackTrace();
+		}catch(BadPaddingException e){
+			e.printStackTrace();
+		} catch (InvalidAlgorithmParameterException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	
+		return null;
+	}
+	
+	public byte[] decrypt(byte[] textToDecrypt) {
+		
+		try {
+			
+			SecretKeySpec skeySpec = new SecretKeySpec(loadKey(), "AES");
+
+	        // build the initialization vector.  This example is all zeros, but it 
+	        // could be any value or generated using a random number generator.
+	        byte[] iv = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	        IvParameterSpec ivspec = new IvParameterSpec(iv);
+
+	        // initialize the cipher for encrypt mode
+	        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+	        cipher.init(Cipher.DECRYPT_MODE, skeySpec, ivspec);
+	        
+	        // decrypt the message
+	        byte[] decrypted = cipher.doFinal(textToDecrypt);
+		    
+		    return decrypted;
+		    
+		}catch(NoSuchAlgorithmException e){
+			e.printStackTrace();
+		}catch(NoSuchPaddingException e){
+			e.printStackTrace();
+		}catch(InvalidKeyException e){
+			e.printStackTrace();
+		}catch(IllegalBlockSizeException e){
+			e.printStackTrace();
+		}catch(BadPaddingException e){
+			e.printStackTrace();
+		} catch (InvalidAlgorithmParameterException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	   return null;
+	}
+	
+	
+	
+	public User encryptUser(User user) {
+		user.setToken(encrypt(user.getToken()));
+		user.setName(encrypt(user.getName()));
+		user.setEmailAddress(encrypt(user.getEmailAddress()));
+		user.setPassword(encrypt(user.getName()));
+		user.setLocation(encrypt(user.getName()));
+		user.setUserBio(encrypt(user.getName()));
+		user.setImagePath(encrypt(user.getName()));
+		
+		return user;
+	}
+	
+	public User decryptUser(User user) {
+		user.setToken(decrypt(user.getToken()));
+		user.setName(decrypt(user.getName()));
+		user.setEmailAddress(decrypt(user.getEmailAddress()));
+		user.setPassword(decrypt(user.getPassword()));
+		user.setLocation(decrypt(user.getLocation()));
+		user.setUserBio(decrypt(user.getUserBio()));
+		user.setImagePath(decrypt(user.getImagePath()));
+		
+		return user;
+	}
+	
+	@SuppressWarnings("unused")
+	private void generateNewKey() {
+		File file = new File("key.txt");
+        KeyGenerator keygen;
+        
+		try {
+			keygen = KeyGenerator.getInstance("AES");
+			keygen.init(128);  
+	        byte[] key = keygen.generateKey().getEncoded(); 
+			writeByteArrayToFile(file, key);
+		} catch (NoSuchAlgorithmException e1) {
+			e1.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}  
+	
+	@SuppressWarnings("unused")
+	private void saveKey(SecretKey key, File file) {
+	    byte[] encoded = key.getEncoded();
+	    String data = new String(encoded);
+	    
+	}
+	private byte[] loadKey() {
+		File file = new File("key.txt");
+		try {
+			byte[] key = readFileToByteArray(file);
+			return key;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	   return null;
 	}
 }
