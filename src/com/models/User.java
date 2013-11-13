@@ -14,16 +14,16 @@ import com.common.Messages;
 
 public class User {
 	private String userIdPrimarKey;
-	private byte[] token;
-	private byte[] name;
-	private byte[] emailAddress;
-	private byte[] password;
+	private String token;
+	private String name;
+	private String emailAddress;
+	private String password;
 	private Timestamp creationTimestamp;
 	private Timestamp lastUpdateTimestamp;
 	private Timestamp lastAccessedTimestamp;
-	private byte[] location;
-	private byte[] userBio;
-	private byte[] imagePath;
+	private String location;
+	private String userBio;
+	private String imagePath;
 	private int count;
 	private Set<User> friends = new HashSet<User>(0);
 
@@ -80,99 +80,51 @@ public class User {
 	}
 
 	public void setName(String name) {
-		this.name = name.getBytes();
-	}
-	
-	public void setName(byte[] name) {
 		this.name = name;
 	}
 
-	public byte[] getName() {
+	public String getName() {
 		return name;
-	}
-	
-	public String getNameToString() {
-		return new String(name);
 	}
 
 	public void setEmailAddress(String emailAddress) {
-		this.emailAddress = emailAddress.getBytes();
-	}
-	
-	public void setEmailAddress(byte[] emailAddress) {
 		this.emailAddress = emailAddress;
 	}
 
-	public byte[] getEmailAddress() {
+	public String getEmailAddress() {
 		return emailAddress;
 	}
 	
-	public String getEmailAddressToString() {
-		return new String(emailAddress);
-	}
-
 	public void setPassword(String password) {
-		this.password = password.getBytes();
-	}
-	
-	public void setPassword(byte[] password) {
 		this.password = password;
 	}
 	
-	public byte[] getPassword() {
+	public String getPassword() {
 		return password;
 	}
-	
-	public String getPasswordToString() {
-		return new String(password);
-	}
-	
-	public void setLocation(String location) {
-		this.location = location.getBytes();
-	}
 
-	public void setLocation(byte[] location) {
+	public void setLocation(String location) {
 		this.location = location;
 	}
 	
-	public byte[] getLocation() {
+	public String getLocation() {
 		return location;
 	}
 	
-	public String getLocationToString() {
-		return new String(location);
-	}
-	
 	public void setUserBio(String userBio) {
-		this.userBio = userBio.getBytes();
-	}
-	
-	public void setUserBio(byte[] userBio) {
 		this.userBio = userBio;
 	}
 	
-	public byte[] getUserBio() {
+	public String getUserBio() {
 		return userBio;
 	}
 	
-	public String getUserBioToString() {
-		return new String(userBio);
-	}
-	
 	public void setImagePath(String imagePath) {
-		this.imagePath = imagePath.getBytes();
-	}
-	
-	public void setImagePath(byte[] imagePath) {
 		this.imagePath = imagePath;
 	}
 
-	public byte[] getImagePath() {
+	public String getImagePath() {
 		return imagePath;
-	}
-	
-	public String getImagePathToString() {
-		return new String(imagePath);
 	}
 
 	public void updateFromUser(User user) {
@@ -220,35 +172,37 @@ public class User {
 	}
 	
 	public void setToken(String token){
-		this.token = token.getBytes();
-	}
-	
-	public void setToken(byte[] token){
 		this.token = token;
 	}
 
-	public byte[] getToken() {
+	public String getToken() {
 		return token;
-	}
-	
-	public String getTokenToString() {
-		return new String(token);
 	}
 	
 	public void generateToken() {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		Calendar calendar = Calendar.getInstance();
 		
-		this.setToken(this.getNameToString() + this.getPasswordToString() + "$" + dateFormat.format(calendar.getTime()));
+		this.setToken(this.getName() + "$" + this.getPassword() + "$" + dateFormat.format(calendar.getTime()));
 	}
 	
 	public void updateToken() {
-		this.setToken(this.getNameToString() + this.getPasswordToString() + "$" + this.timestampFromToken(this.getTokenToString()));
+		this.setToken(this.getName() + "$" + this.getPassword() + "$" + this.getTokenTime(this.getToken()));
 	}
 	
-	public String timestampFromToken(String token) {
+	public String getTokenName(String token) {
+		String[] str_array = token.split("\\$");
+		return str_array[0];
+	}
+	
+	public String getTokenPassword(String token) {
 		String[] str_array = token.split("\\$");
 		return str_array[1];
+	}
+	
+	public String getTokenTime(String token) {
+		String[] str_array = token.split("\\$");
+		return str_array[2];
 	}
 	
 	//Have not tested this fully
@@ -257,13 +211,13 @@ public class User {
 		Calendar currentCalendar = Calendar.getInstance();
 		Calendar tokenCalendar = Calendar.getInstance();
 		try {
-			Date tokenDate = dateFormat.parse(this.timestampFromToken(token));
+			Date tokenDate = dateFormat.parse(this.getTokenTime(token));
 			tokenCalendar.setTime(tokenDate);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		currentCalendar.add(Calendar.HOUR_OF_DAY, -3);
-		
+		currentCalendar.add(Calendar.HOUR_OF_DAY, -24);
+	
 		int result = tokenCalendar.getTime().compareTo(currentCalendar.getTime());
 		
 		if(result < 0) {

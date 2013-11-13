@@ -166,8 +166,7 @@ public class BookingLogger {
 		getLogger().log(Level.SEVERE, displayMessage, object);
 		//showMessage("Severe log generated,");
 	}
-	
-	@SuppressWarnings("unused")
+
 	private void showMessage(String message) {
 		
 		String newMessage = message + SPACE + "check log file: " + LOG_FILE_NAME;

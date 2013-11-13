@@ -22,14 +22,19 @@ public class HibernateTestCase {
 		myuser.setLocation("Ottawa");
 		myuser.setUserBio("Just your everyday normal user object");
 		myuser.generateToken();
-		System.out.println("The token is: " + myuser.getTokenToString());
-		System.out.println("The timestamp is: " + myuser.timestampFromToken(myuser.getTokenToString()));
-		if(myuser.isTokenValid(myuser.getTokenToString()))
+		System.out.println("The token is: " + myuser.getToken());
+		System.out.println("The timestamp is: " + myuser.getTokenTime(myuser.getToken()));
+		if(myuser.isTokenValid(myuser.getToken()))
 			System.out.println("Token is good");	
 		manager.add(myuser);
 		
 		User newUser = manager.getUserByEmailAddress(myuser.getEmailAddress());
-		System.out.println("The users email is: " + newUser.getEmailAddressToString());
+		System.out.println("The users email is: " + newUser.getEmailAddress());
+		
+		String encryptedText = manager.encrypt("My name is brayden");
+		String decryptedText = manager.decrypt(encryptedText);
+		System.out.println(encryptedText);
+		System.out.println(decryptedText);
 		
 	}
 

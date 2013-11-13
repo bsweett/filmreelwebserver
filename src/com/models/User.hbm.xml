@@ -17,31 +17,31 @@
         </id>
 		
 		 <property name="token">
-            <column name="TOKEN" sql-type="blob" not-null="true"/>
+            <column name="TOKEN" sql-type="tinytext" not-null="true"/>
         </property>
         
         <property name="name">
-            <column name="NAME" sql-type="blob" not-null="true"/>
+            <column name="NAME" sql-type="tinytext" not-null="true"/>
         </property>
         
         <property name="emailAddress">
-            <column name="EMAIL_ADDRESS" sql-type="blob" not-null="true"/>
+            <column name="EMAIL_ADDRESS" sql-type="tinytext" not-null="true"/>
         </property>
         
         <property name="password">
-            <column name="PASSWORD" sql-type="blob" not-null="true"/>
+            <column name="PASSWORD" sql-type="tinytext" not-null="true"/>
         </property>
        
         <property name="location">
-            <column name="LOCATION" sql-type="blob" not-null="true"/>
+            <column name="LOCATION" sql-type="tinytext" not-null="true"/>
         </property>
         
         <property name="userBio">
-            <column name="USERBIO" sql-type="blob" not-null="true"/>
+            <column name="USERBIO" sql-type="tinytext" not-null="true"/>
         </property>
         
          <property name="imagePath">
-            <column name="IMAGEPATH" sql-type="blob" not-null="true"/>
+            <column name="IMAGEPATH" sql-type="tinytext" not-null="true"/>
         </property>
         
         <property name="count">
