@@ -6,8 +6,6 @@ import org.apache.struts2.interceptor.ServletRequestAware;
 
 import com.class3601.social.common.MessageStore;
 import com.opensymphony.xwork2.ActionSupport;
-import com.persistence.HibernateUserManager;
-import com.models.User;
 
 public class CreateUserAction extends ActionSupport implements ServletRequestAware {
 	

@@ -244,7 +244,7 @@ public class HibernateUserManager extends
 	}
 	
 	@SuppressWarnings("unchecked")
-	public synchronized User getUserByEmailAddress(byte[] bs) {
+	public synchronized User getUserByEmailAddress(String emailAddress) {
 		
 		Session session = null;
 		Transaction transaction = null;
@@ -252,7 +252,7 @@ public class HibernateUserManager extends
 			session = HibernateUtil.getCurrentSession();
 			transaction = session.beginTransaction();
 			Query query = session.createQuery(SELECT_USER_WITH_EMAIL_ADDRESS);
-			query.setParameter("email", bs);
+			query.setParameter("email", emailAddress);
 			List<User> users = query.list();
 			transaction.commit();
 
