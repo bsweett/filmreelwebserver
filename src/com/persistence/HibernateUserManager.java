@@ -44,6 +44,7 @@ import com.models.User;
 public class HibernateUserManager extends
 		AbstractHibernateDatabaseManager {
 
+	private static final byte[] KEY = ";EZ¼å6WSÝÝÔ™S".getBytes();
 	private static String USER_TABLE_NAME = "USER";
 	private static String USER_JOIN_TABLE_NAME = "USER_FRIEND_USER";
 	private static String USER_CLASS_NAME = "User";
@@ -112,7 +113,6 @@ public class HibernateUserManager extends
 		HibernateUtil.executeSQLQuery(DROP_TABLE_SQL);
 		HibernateUtil.executeSQLQuery(DROP_JOIN_TABLE_SQL);
 		HibernateUtil.executeSQLQuery(CREATE_JOIN_TABLE_SQL);
-		this.generateNewKey();
 		return HibernateUtil.executeSQLQuery(CREATE_TABLE_SQL);
 	}
 
@@ -406,7 +406,7 @@ public class HibernateUserManager extends
 			
 			byte[] plainText = textToEncrypt.getBytes("UTF-8");
 			
-			SecretKeySpec skeySpec = new SecretKeySpec(loadKey(), "AES");
+			SecretKeySpec skeySpec = new SecretKeySpec(KEY, "AES");
 			
 	        // build the initialization vector.  This example is all zeros, but it 
 	        // could be any value or generated using a random number generator.
@@ -450,7 +450,7 @@ public class HibernateUserManager extends
 			
 			byte[] encryptedText = textToDecrypt.getBytes("UTF-8");
 			
-			SecretKeySpec skeySpec = new SecretKeySpec(loadKey(), "AES");
+			SecretKeySpec skeySpec = new SecretKeySpec(KEY, "AES");
 
 	        // build the initialization vector.  This example is all zeros, but it 
 	        // could be any value or generated using a random number generator.
