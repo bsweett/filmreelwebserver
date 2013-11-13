@@ -5,6 +5,7 @@ import static org.apache.commons.io.FileUtils.writeByteArrayToFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -29,6 +30,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 
 
+import org.apache.commons.codec.binary.Base64;
 import org.hibernate.HibernateException;
 import org.hibernate.ObjectNotFoundException;
 import org.hibernate.Query;
@@ -76,7 +78,7 @@ public class HibernateUserManager extends
 		+ USER_CLASS_NAME;
 	
 	private static final String CREATE_TABLE_SQL = "create table " + USER_TABLE_NAME + "(USER_ID_PRIMARY_KEY char(36) primary key,"
-			+ "TOKEN blob, NAME blob, EMAIL_ADDRESS blob, PASSWORD blob, LOCATION blob, USERBIO blob, IMAGEPATH blob, COUNT int,"
+			+ "TOKEN tinytext, NAME tinytext, EMAIL_ADDRESS tinytext, PASSWORD tinytext, LOCATION tinytext, USERBIO tinytext, IMAGEPATH tinytext, COUNT int,"
 			+ "CREATION_TIME timestamp, LAST_UPDATE_TIME timestamp, LAST_ACCESSED_TIME timestamp);";
 
 	private static final String CREATE_JOIN_TABLE_SQL = "create table " + USER_JOIN_TABLE_NAME + "(USER_ID char(36), FRIEND_USER_ID char(36));";
@@ -111,7 +113,7 @@ public class HibernateUserManager extends
 		HibernateUtil.executeSQLQuery(DROP_TABLE_SQL);
 		HibernateUtil.executeSQLQuery(DROP_JOIN_TABLE_SQL);
 		HibernateUtil.executeSQLQuery(CREATE_JOIN_TABLE_SQL);
-		//this.generateNewKey();
+		this.generateNewKey();
 		return HibernateUtil.executeSQLQuery(CREATE_TABLE_SQL);
 	}
 
@@ -399,11 +401,14 @@ public class HibernateUserManager extends
 		}
 	}
 	
-	public byte[] encrypt(byte[] textToEncrypt) {
+	public String encrypt(String textToEncrypt) {
 	 	
-		try {	
+		try {
+			
+			byte[] plainText = textToEncrypt.getBytes("UTF-8");
+			
 			SecretKeySpec skeySpec = new SecretKeySpec(loadKey(), "AES");
-
+			
 	        // build the initialization vector.  This example is all zeros, but it 
 	        // could be any value or generated using a random number generator.
 	        byte[] iv = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
@@ -414,9 +419,11 @@ public class HibernateUserManager extends
 	        cipher.init(Cipher.ENCRYPT_MODE, skeySpec, ivspec);
 
 	        // encrypt the message
-	        byte[] encrypted = cipher.doFinal(textToEncrypt);
+	        byte[] encrypted = cipher.doFinal(plainText);
 		    
-		    return encrypted;
+	        Base64 encoder = new Base64();
+	      
+		    return new String (encoder.encode(encrypted));
 		    
 		}catch(NoSuchAlgorithmException e){
 			e.printStackTrace();
@@ -429,16 +436,20 @@ public class HibernateUserManager extends
 		}catch(BadPaddingException e){
 			e.printStackTrace();
 		} catch (InvalidAlgorithmParameterException e) {
-			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
 	
 		return null;
 	}
 	
-	public byte[] decrypt(byte[] textToDecrypt) {
+	public String decrypt(String textToDecrypt) {
 		
 		try {
+			Base64 encoder = new Base64();
+			
+			byte[] encryptedText = textToDecrypt.getBytes("UTF-8");
 			
 			SecretKeySpec skeySpec = new SecretKeySpec(loadKey(), "AES");
 
@@ -452,9 +463,12 @@ public class HibernateUserManager extends
 	        cipher.init(Cipher.DECRYPT_MODE, skeySpec, ivspec);
 	        
 	        // decrypt the message
-	        byte[] decrypted = cipher.doFinal(textToDecrypt);
+	        byte[] decrypted = cipher.doFinal(encoder.decode(encryptedText));
+	        
+	        
 		    
-		    return decrypted;
+	        return new String(decrypted);
+		  //  return decrypted;
 		    
 		}catch(NoSuchAlgorithmException e){
 			e.printStackTrace();
@@ -467,7 +481,8 @@ public class HibernateUserManager extends
 		}catch(BadPaddingException e){
 			e.printStackTrace();
 		} catch (InvalidAlgorithmParameterException e) {
-			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
 		
@@ -499,8 +514,7 @@ public class HibernateUserManager extends
 		
 		return user;
 	}
-	
-	@SuppressWarnings("unused")
+
 	private void generateNewKey() {
 		File file = new File("key.txt");
         KeyGenerator keygen;
@@ -517,7 +531,6 @@ public class HibernateUserManager extends
 		}
 	}  
 	
-	@SuppressWarnings("unused")
 	private void saveKey(SecretKey key, File file) {
 	    byte[] encoded = key.getEncoded();
 	    String data = new String(encoded);
