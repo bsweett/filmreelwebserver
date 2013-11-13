@@ -21,9 +21,12 @@ public class CreateUserAction extends ActionSupport implements ServletRequestAwa
     					"</parameter>\n" +
     					"   <parameter>";
     private static String XML_3 = 
+			"</parameter>\n" +
+			"   <parameter>";
+    private static String XML_4 = 
 						"</parameter>\n";
     
-    private static String XML_4 = "</stuff>\n";
+    private static String XML_5 = "</stuff>\n";
     
 	private MessageStore messageStore;
 	private HttpServletRequest request;
@@ -37,6 +40,7 @@ public class CreateUserAction extends ActionSupport implements ServletRequestAwa
 		//http://localhost:8080/social/initial?parameter1=dog&parameter2=error
 		String parameter1 = getServletRequest().getParameter(PARAMETER_1);
 		String  parameter2 = getServletRequest().getParameter(PARAMETER_2);
+		String  parameter3 = getServletRequest().getParameter(PARAMETER_3);
 		messageStore = new MessageStore();
 		
 		messageStore.appendToMessage(XML_1);
@@ -44,32 +48,37 @@ public class CreateUserAction extends ActionSupport implements ServletRequestAwa
 		messageStore.appendToMessage(XML_2);
 		messageStore.appendToMessage(parameter2);
 		messageStore.appendToMessage(XML_3);
+		messageStore.appendToMessage(parameter3);
 		messageStore.appendToMessage(XML_4);
+		messageStore.appendToMessage(XML_5);
 		
-		if(parameter1.isEmpty() || parameter2.isEmpty()) {
+		if(parameter1.isEmpty() || parameter2.isEmpty() || parameter3.isEmpty()) {
 			return "fail";
 		}
+		return parameter3;
 		
-		HibernateUserManager manager;
-		manager = HibernateUserManager.getDefault();
-		User testuser = manager.getUserByNameAndPassword(parameter1, parameter2);
-		if(testuser == null) {
-			User myuser = new User();
-			myuser.setName(parameter1);
-			myuser.setEmailAddress(parameter1);
-			myuser.setPassword(parameter2);
-			manager.add(myuser);
-			return "newuser";
-		}
 		
-		else {
-			User gotUser = manager.getUserByNameAndPassword(parameter1, parameter2);
-			gotUser.incramentCount();
-			String countAsString = Integer.toString(gotUser.getCount());
-			manager.update(gotUser);
-			messageStore.appendToMessage(countAsString);
-			return "success";
-		}
+		// TODO:: 
+//		HibernateUserManager manager;
+//		manager = HibernateUserManager.getDefault();
+//		User testuser = manager.getUserByEmailAddress(parameter3);
+//		if(testuser == null) {
+//			User myuser = new User();
+//			myuser.setName(parameter1);
+//			myuser.setEmailAddress(parameter1);
+//			myuser.setPassword(parameter2);
+//			manager.add(myuser);
+//			return "newuser";
+//		}
+//		
+//		else {
+//			User gotUser = manager.getUserByNameAndPassword(parameter1, parameter2);
+//			gotUser.incramentCount();
+//			String countAsString = Integer.toString(gotUser.getCount());
+//			manager.update(gotUser);
+//			messageStore.appendToMessage(countAsString);
+//			return "success";
+//		}
 		
 //		if(!parameter1.isEmpty() && !parameter2.isEmpty()) {
 //			User testuser = manager.getUserByNameAndPassword(parameter1, parameter2);

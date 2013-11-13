@@ -29,6 +29,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 
 
+
 import org.apache.commons.codec.binary.Base64;
 import org.hibernate.HibernateException;
 import org.hibernate.ObjectNotFoundException;
@@ -243,7 +244,7 @@ public class HibernateUserManager extends
 	}
 	
 	@SuppressWarnings("unchecked")
-	public synchronized User getUserByEmailAddress(String emailAddress) {
+	public synchronized User getUserByEmailAddress(byte[] bs) {
 		
 		Session session = null;
 		Transaction transaction = null;
@@ -251,7 +252,7 @@ public class HibernateUserManager extends
 			session = HibernateUtil.getCurrentSession();
 			transaction = session.beginTransaction();
 			Query query = session.createQuery(SELECT_USER_WITH_EMAIL_ADDRESS);
-			query.setParameter("email", emailAddress);
+			query.setParameter("email", bs);
 			List<User> users = query.list();
 			transaction.commit();
 
