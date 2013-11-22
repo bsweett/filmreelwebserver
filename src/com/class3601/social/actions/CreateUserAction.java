@@ -5,26 +5,21 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.struts2.interceptor.ServletRequestAware;
 
 import com.class3601.social.common.MessageStore;
+import com.models.User;
 import com.opensymphony.xwork2.ActionSupport;
+import com.persistence.HibernateUserManager;
 
 public class CreateUserAction extends ActionSupport implements ServletRequestAware {
 	
 	private static final long serialVersionUID = 1L;
-    private static String PARAMETER_1 = "id";
+    private static String PARAMETER_1 = "name";
     private static String PARAMETER_2 = "password";
     private static String PARAMETER_3 = "email";
-    private static String XML_1 = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\n" +
-    				"<stuff>\n" + "   <parameter>";
-    private static String XML_2 = 
-    					"</parameter>\n" +
-    					"   <parameter>";
-    private static String XML_3 = 
-			"</parameter>\n" +
-			"   <parameter>";
-    private static String XML_4 = 
-						"</parameter>\n";
-    
-    private static String XML_5 = "</stuff>\n";
+    private static String XML_1 = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\n";
+    private static String XML_2 = "<user>\n";
+    private static String XML_3 = "<token>";
+    private static String XML_5 = "</token>\n";
+    private static String XML_6 = "</user>\n";
     
 	private MessageStore messageStore;
 	private HttpServletRequest request;
@@ -41,79 +36,47 @@ public class CreateUserAction extends ActionSupport implements ServletRequestAwa
 		String  parameter3 = getServletRequest().getParameter(PARAMETER_3);
 		messageStore = new MessageStore();
 		
-		messageStore.appendToMessage(XML_1);
-		messageStore.appendToMessage(parameter1);
-		messageStore.appendToMessage(XML_2);
-		messageStore.appendToMessage(parameter2);
-		messageStore.appendToMessage(XML_3);
-		messageStore.appendToMessage(parameter3);
-		messageStore.appendToMessage(XML_4);
-		messageStore.appendToMessage(XML_5);
-		
-		if(parameter1.isEmpty() || parameter2.isEmpty() || parameter3.isEmpty()) {
+		if(parameter1.isEmpty() || parameter2.isEmpty() || parameter3.isEmpty()) 
+		{
+			messageStore.appendToMessage(XML_1);
+			messageStore.appendToMessage(XML_2);
+			messageStore.appendToMessage(XML_3);
+			messageStore.appendToMessage("Fail");
+			messageStore.appendToMessage(XML_5);
+			messageStore.appendToMessage(XML_6);
 			return "fail";
 		}
-		return parameter3;
 		
-		
-		// TODO:: 
-//		HibernateUserManager manager;
-//		manager = HibernateUserManager.getDefault();
-//		User testuser = manager.getUserByEmailAddress(parameter3);
-//		if(testuser == null) {
-//			User myuser = new User();
-//			myuser.setName(parameter1);
-//			myuser.setEmailAddress(parameter1);
-//			myuser.setPassword(parameter2);
-//			manager.add(myuser);
-//			return "newuser";
-//		}
-//		
-//		else {
-//			User gotUser = manager.getUserByNameAndPassword(parameter1, parameter2);
-//			gotUser.incramentCount();
-//			String countAsString = Integer.toString(gotUser.getCount());
-//			manager.update(gotUser);
-//			messageStore.appendToMessage(countAsString);
-//			return "success";
-//		}
-		
-//		if(!parameter1.isEmpty() && !parameter2.isEmpty()) {
-//			User testuser = manager.getUserByNameAndPassword(parameter1, parameter2);
-//			if(testuser == null) {
-//				System.out.println("Creating new user\n");
-//				User user = new User();
-//				user.setName(parameter1);
-//				user.setPassword(parameter2);
-//				manager.add(user);
-//				String countAsString = Integer.toString(user.getCount());
-//				messageStore.appendToMessage(countAsString);
-//				return "newuser";
-//			} else if(testuser != null) {
-//				User user = manager.getUserByNameAndPassword(parameter1, parameter2);
-//				user.incramentCount();
-//				String countAsString = Integer.toString(user.getCount());
-//				manager.update(user);
-//				messageStore.appendToMessage(countAsString);
-//				return "succuss";
-//			}
-//		} 
-//			addActionError("Wrong user name or Password");
-//			return "fail";
-				
-//		if(parameter1.equals("aaa") && parameter2.equals("bbb")){
-//			User user = manager.getUserByNameAndPassword("aaa", "bbb");
-//			System.out.println("" + user.getName() + user.getCount());
-//			user.incramentCount();
-//			System.out.println("New count:" + user.getCount());
-//			String countAsString = Integer.toString(user.getCount());
-//			manager.update(user);
-//			messageStore.appendToMessage(countAsString);
-//			return "success";
-//		} else {
-//			addActionError("Wrong user name or Password");
-//			return "fail";
-//		}
+		HibernateUserManager manager;
+		manager = HibernateUserManager.getDefault();
+		User testuser = manager.getUserByEmailAddressAndName(manager.encrypt(parameter3), manager.encrypt(parameter1));
+		if(testuser == null)
+		{
+			System.out.println("TestUser is Null\n");
+			User newUser = new User();
+			newUser.setName(parameter1);
+			newUser.setPassword(parameter2);
+			newUser.setEmailAddress(parameter3);
+			newUser.generateToken();
+			manager.add(newUser);
+			messageStore.appendToMessage(XML_1);
+			messageStore.appendToMessage(XML_2);
+			messageStore.appendToMessage(XML_3);
+			messageStore.appendToMessage(newUser.getToken());
+			messageStore.appendToMessage(XML_5);
+			messageStore.appendToMessage(XML_6);
+			return "success";
+		} 
+		else 
+		{
+			messageStore.appendToMessage(XML_1);
+			messageStore.appendToMessage(XML_2);
+			messageStore.appendToMessage(XML_3);
+			messageStore.appendToMessage("UserAlreadyExists");
+			messageStore.appendToMessage(XML_5);
+			messageStore.appendToMessage(XML_6);
+			return "UserAlreadyExists";
+		}
 	}	
 		
 	public MessageStore getMessageStore() {

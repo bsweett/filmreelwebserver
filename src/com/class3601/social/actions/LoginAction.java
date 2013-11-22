@@ -14,100 +14,70 @@ public class LoginAction extends ActionSupport implements ServletRequestAware {
 	private static final long serialVersionUID = 1L;
     private static String PARAMETER_1 = "id";
     private static String PARAMETER_2 = "password";
-    private static String XML_1 = 
-    		"<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\n" +
-    				"<stuff>\n" +
-    					"   <parameter>";
-    private static String XML_2 = 
-    					"</parameter>\n" +
-    					"   <parameter>";
-    private static String XML_3 = 
-						"</parameter>\n";
-    
-    private static String XML_4 = "</stuff>\n";
+    private static String XML_1 = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\n";
+    private static String XML_2 = "<user>\n";
+    private static String XML_3 = "<token>";
+    private static String XML_5 = "</token>\n";
+    private static String XML_6 = "</user>\n";
+
     
 	private MessageStore messageStore;
 	private HttpServletRequest request;
 	
-	public String execute() throws Exception {
-		// HttpServletRequest request = ServletActionContext.getRequest();
-		// preferred method is to implement ServletRequestAware interface
-		// http://struts.apache.org/2.0.14/docs/how-can-we-access-the-httpservletrequest.html
-	
-		//http://localhost:8080/social/initial?parameter1=dog&parameter2=cat
-		//http://localhost:8080/social/initial?parameter1=dog&parameter2=error
+	public String execute() throws Exception 
+	{
 		String parameter1 = getServletRequest().getParameter(PARAMETER_1);
 		String  parameter2 = getServletRequest().getParameter(PARAMETER_2);
 		messageStore = new MessageStore();
-		
-		messageStore.appendToMessage(XML_1);
-		messageStore.appendToMessage(parameter1);
-		messageStore.appendToMessage(XML_2);
-		messageStore.appendToMessage(parameter2);
-		messageStore.appendToMessage(XML_3);
-		messageStore.appendToMessage(XML_4);
-		
-		if(parameter1.isEmpty() || parameter2.isEmpty()) {
+				
+		if(parameter1.isEmpty() || parameter2.isEmpty()) 
+		{
+			messageStore.appendToMessage(XML_1);
+			messageStore.appendToMessage(XML_2);
+			messageStore.appendToMessage(XML_3);
+			messageStore.appendToMessage("Fail");
+			messageStore.appendToMessage(XML_5);
+			messageStore.appendToMessage(XML_6);
 			return "fail";
 		}
 		
+		User getUser = new User();
+		getUser.setName(parameter1);
+		getUser.setPassword(parameter2);
+		
 		HibernateUserManager manager;
 		manager = HibernateUserManager.getDefault();
-		User testuser = manager.getUserByNameAndPassword(parameter1, parameter2);
-		if(testuser == null) {
-			User myuser = new User();
-			myuser.setName(parameter1);
-			myuser.setEmailAddress(parameter1);
-			myuser.setPassword(parameter2);
-			manager.add(myuser);
-			return "newuser";
+		manager.encryptUser(getUser);
+		
+		
+		User testuser = manager.getUserByNameAndPassword(getUser.getName(), getUser.getPassword());
+		if(testuser == null) 
+		{
+			messageStore.appendToMessage(XML_1);
+			messageStore.appendToMessage(XML_2);
+			messageStore.appendToMessage(XML_3);
+			messageStore.appendToMessage("NoUserFound");
+			messageStore.appendToMessage(XML_5);
+			messageStore.appendToMessage(XML_6);
+			return "NoUserFound";
 		}
 		
-		else {
-			User gotUser = manager.getUserByNameAndPassword(parameter1, parameter2);
-			gotUser.incramentCount();
-			String countAsString = Integer.toString(gotUser.getCount());
-			manager.update(gotUser);
-			messageStore.appendToMessage(countAsString);
+		else 
+		{
+			testuser.incramentCount();
+			testuser.generateToken();
+			testuser.setToken(manager.encrypt(testuser.getToken()));
+			testuser.setPassword(manager.encrypt(testuser.getPassword()));
+			
+			manager.update(testuser);
+			messageStore.appendToMessage(XML_1);
+			messageStore.appendToMessage(XML_2);
+			messageStore.appendToMessage(XML_3);
+			messageStore.appendToMessage(testuser.getToken());
+			messageStore.appendToMessage(XML_5);
+			messageStore.appendToMessage(XML_6);
 			return "success";
 		}
-		
-//		if(!parameter1.isEmpty() && !parameter2.isEmpty()) {
-//			User testuser = manager.getUserByNameAndPassword(parameter1, parameter2);
-//			if(testuser == null) {
-//				System.out.println("Creating new user\n");
-//				User user = new User();
-//				user.setName(parameter1);
-//				user.setPassword(parameter2);
-//				manager.add(user);
-//				String countAsString = Integer.toString(user.getCount());
-//				messageStore.appendToMessage(countAsString);
-//				return "newuser";
-//			} else if(testuser != null) {
-//				User user = manager.getUserByNameAndPassword(parameter1, parameter2);
-//				user.incramentCount();
-//				String countAsString = Integer.toString(user.getCount());
-//				manager.update(user);
-//				messageStore.appendToMessage(countAsString);
-//				return "succuss";
-//			}
-//		} 
-//			addActionError("Wrong user name or Password");
-//			return "fail";
-				
-//		if(parameter1.equals("aaa") && parameter2.equals("bbb")){
-//			User user = manager.getUserByNameAndPassword("aaa", "bbb");
-//			System.out.println("" + user.getName() + user.getCount());
-//			user.incramentCount();
-//			System.out.println("New count:" + user.getCount());
-//			String countAsString = Integer.toString(user.getCount());
-//			manager.update(user);
-//			messageStore.appendToMessage(countAsString);
-//			return "success";
-//		} else {
-//			addActionError("Wrong user name or Password");
-//			return "fail";
-//		}
 	}	
 		
 	public MessageStore getMessageStore() {

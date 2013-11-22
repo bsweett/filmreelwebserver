@@ -22,9 +22,15 @@
   		</action>
   		
   		<action name="login" class="com.class3601.social.actions.LoginAction" method="execute">
-    		<result name="success">pages/example/example-test.jsp</result>
-    		<result name="fail">pages/example/sample-errors.jsp</result>
-    		<result name="newuser">pages/example/example-new.jsp</result>
+    		<result name="success">pages/success/success-login.jsp</result>
+    		<result name="fail">pages/error/error-fail.jsp</result>
+    		<result name="NoUserFound">pages/error/error-nouser.jsp</result>
+  		</action>
+  		
+  		<action name="create" class="com.class3601.social.actions.CreateUserAction" method="execute">
+    		<result name="success">pages/success/success-create.jsp</result>
+    		<result name="fail">pages/error/error-fail.jsp</result>
+    		<result name="UserAlreadyExists">pages/error/error-nouser.jsp</result>
   		</action>
 
 	</package>
