@@ -65,10 +65,6 @@ public class LoginAction extends ActionSupport implements ServletRequestAware {
 		else 
 		{
 			testuser.incramentCount();
-			testuser.generateToken();
-			testuser.setToken(manager.encrypt(testuser.getToken()));
-			testuser.setPassword(manager.encrypt(testuser.getPassword()));
-			
 			manager.update(testuser);
 			messageStore.appendToMessage(XML_1);
 			messageStore.appendToMessage(XML_2);

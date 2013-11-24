@@ -4,6 +4,11 @@ import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.crypto.BadPaddingException;
@@ -43,9 +48,9 @@ public class HibernateUserManager extends
 
 	private static String SELECT_USER_WITH_EMAIL_ADDRESS = "from "
 			+ USER_CLASS_NAME + " as user where user.emailAddress = :email";
-	private static String SELECT_USER_WITH_EMAIL_AND_NAME = "from "
+	private static String SELECT_USER_WITH_EMAIL_AND_PASSWORD = "from "
 			+ USER_CLASS_NAME
-			+ " as user where user.emailAddress = :email and user.name = :name";
+			+ " as user where user.emailAddress = :email and user.password = :password";
 
 	private static final String DROP_TABLE_SQL = "drop table " + USER_TABLE_NAME + ";";
 
@@ -101,10 +106,12 @@ public class HibernateUserManager extends
 		Transaction transaction = null;
 		Session session = null;
 		User user = (User) object;
-		user.generateToken();
+		
+		user.setToken(generateToken(user));
 		
 		//Encrpyt the users information
 		user = encryptUser(user);
+		
 		
 		try {
 			session = HibernateUtil.getCurrentSession();
@@ -144,7 +151,7 @@ public class HibernateUserManager extends
 	 * @return
 	 */
 	public synchronized boolean update(User user) {
-		user.updateToken();
+		user.setToken(updateToken(user));
 		boolean result = super.update(user);	
 		return result;
 	}
@@ -206,8 +213,8 @@ public class HibernateUserManager extends
 			session = HibernateUtil.getCurrentSession();
 			transaction = session.beginTransaction();
 			Query query = session.createQuery(SELECT_USER_WITH_USER_PASSWORD);
-			query.setParameter("username", name);
-			query.setParameter("password", password);
+			query.setParameter("username", this.encrypt(name));
+			query.setParameter("password", this.encrypt(password));
 			List<User> users = query.list();
 			transaction.commit();
 
@@ -241,7 +248,7 @@ public class HibernateUserManager extends
 			session = HibernateUtil.getCurrentSession();
 			transaction = session.beginTransaction();
 			Query query = session.createQuery(SELECT_USER_WITH_NAME);
-			query.setParameter("name", name);
+			query.setParameter("name", this.encrypt(name));
 			List<User> users = query.list();
 			transaction.commit();
 
@@ -277,7 +284,7 @@ public class HibernateUserManager extends
 			session = HibernateUtil.getCurrentSession();
 			transaction = session.beginTransaction();
 			Query query = session.createQuery(SELECT_USER_WITH_EMAIL_ADDRESS);
-			query.setParameter("email", emailAddress);
+			query.setParameter("email", this.encrypt(emailAddress));
 			List<User> users = query.list();
 			transaction.commit();
 
@@ -307,7 +314,7 @@ public class HibernateUserManager extends
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public synchronized User getUserByEmailAddressAndName(String emailAddress, String name) 
+	public synchronized User getUserByEmailAddressAndPassword(String emailAddress, String password) 
 	{
 		System.out.println("====== IN GET USER BY EMAIL AND NAME =======");
 		Session session = null;
@@ -316,9 +323,9 @@ public class HibernateUserManager extends
 		try {
 			session = HibernateUtil.getCurrentSession();
 			transaction = session.beginTransaction();
-			Query query = session.createQuery(SELECT_USER_WITH_EMAIL_AND_NAME);
-			query.setParameter("email", emailAddress);
-			query.setParameter("name", name);
+			Query query = session.createQuery(SELECT_USER_WITH_EMAIL_AND_PASSWORD);
+			query.setParameter("email", this.encrypt(emailAddress));
+			query.setParameter("password", this.encrypt(password));
 			List<User> users = query.list();
 			transaction.commit();
 
@@ -336,6 +343,36 @@ public class HibernateUserManager extends
 		} finally {
 			closeSession();
 		}
+	}
+	
+	//Gets a user by their token from the database
+    @SuppressWarnings("unchecked")
+	public synchronized User getUserByToken(String token) {
+		
+		Session session = null;
+		Transaction transaction = null;
+		try {
+			session = HibernateUtil.getCurrentSession();
+			transaction = session.beginTransaction();
+			Query query = session.createQuery(SELECT_USER_WITH_TOKEN);
+			query.setParameter("token", token);
+			List<User> users = query.list();
+			transaction.commit();
+
+			if (users.isEmpty()) {
+				return null;
+			} else {
+				User user = users.get(0);
+				return decryptUser(user);
+			}
+		} catch (HibernateException exception) {
+			BookingLogger.getDefault().severe(this,
+					Messages.METHOD_GET_USER_BY_NAME,
+					"error.getUserByName", exception);
+			return null;
+		} finally {
+			closeSession();
+		} 
 	}
 	
 	public String getTableName() { return USER_TABLE_NAME; }
@@ -446,7 +483,6 @@ public class HibernateUserManager extends
 	        
 		    
 	        return new String(decrypted);
-		  //  return decrypted;
 		    
 		}catch(NoSuchAlgorithmException e){
 			e.printStackTrace();
@@ -470,19 +506,17 @@ public class HibernateUserManager extends
 	
 	
 	public User encryptUser(User user) {
-		user.setToken(encrypt(user.getToken()));
 		user.setName(encrypt(user.getName()));
 		user.setEmailAddress(encrypt(user.getEmailAddress()));
-		user.setPassword(encrypt(user.getName()));
-		user.setLocation(encrypt(user.getName()));
-		user.setUserBio(encrypt(user.getName()));
-		user.setImagePath(encrypt(user.getName()));
+		user.setPassword(encrypt(user.getPassword()));
+		user.setLocation(encrypt(user.getLocation()));
+		user.setUserBio(encrypt(user.getUserBio()));
+		user.setImagePath(encrypt(user.getImagePath()));
 		
 		return user;
 	}
 	
 	public User decryptUser(User user) {
-		user.setToken(decrypt(user.getToken()));
 		user.setName(decrypt(user.getName()));
 		user.setEmailAddress(decrypt(user.getEmailAddress()));
 		user.setPassword(decrypt(user.getPassword()));
@@ -492,4 +526,82 @@ public class HibernateUserManager extends
 		
 		return user;
 	}
+	
+	//==========================================//
+	//	Not sure if this should go here but		//
+	//	it allows for getting parts of token	//
+	//	from encrypted token without decrypting //
+	//	the token itself						//
+	//==========================================//
+	
+	//Gets the name from a token
+	 public String getTokenName(String token) {
+		String plainToken = decrypt(token);
+		String[] str_array = plainToken.split("\\$");
+		
+		if(str_array == null)
+ 			return "unknown";
+		
+		return str_array[0];
+	}
+    
+	 //Gets the password from a token
+	 public String getTokenPassword(String token) {
+		String plainToken = decrypt(token);
+ 		String[] str_array = plainToken.split("\\$");
+ 		
+ 		if(str_array == null)
+ 			return "unknown";
+ 		
+ 		return str_array[1];
+ 	}
+    
+    //Gets the time from a token
+	 public String getTokenTime(String token) {
+		String plainToken = decrypt(token);
+ 		String[] str_array = plainToken.split("\\$");
+ 		
+ 		if(str_array == null)
+ 			return "unknown";
+ 		
+ 		return str_array[2];
+ 	}
+	 
+	//Generates a new user token
+	public String generateToken(User user) {
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		Calendar calendar = Calendar.getInstance();
+		return encrypt(user.getName() + "$" + user.getPassword() + "$" + dateFormat.format(calendar.getTime()));
+	}
+		
+	//Updates an existing token
+	public String updateToken(User user) {
+		String plainToken = decrypt(user.getToken());
+		return encrypt(this.getTokenName(plainToken) + "$" + this.getTokenPassword(plainToken) + "$" + this.getTokenTime(plainToken));
+	}
+	
+	//Have not tested this fully
+	public boolean isTokenValid(User user) {
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		Calendar currentCalendar = Calendar.getInstance();
+		Calendar tokenCalendar = Calendar.getInstance();
+		try {
+			Date tokenDate = dateFormat.parse(this.getTokenTime(user.getToken()));
+			tokenCalendar.setTime(tokenDate);
+		} catch (ParseException e) {
+				e.printStackTrace();
+		}
+		currentCalendar.add(Calendar.HOUR_OF_DAY, -24);
+	
+		int result = tokenCalendar.getTime().compareTo(currentCalendar.getTime());
+			
+		if(result < 0) {
+			return false;
+		}
+		
+		else {
+			return true;
+		}
+	}
+		
 }

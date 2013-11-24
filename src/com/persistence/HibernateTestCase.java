@@ -21,21 +21,18 @@ public class HibernateTestCase {
 		myuser.setImagePath("/null");
 		myuser.setLocation("Ottawa");
 		myuser.setUserBio("Just your everyday normal user object");
-		myuser.generateToken();
-		System.out.println("The token is: " + myuser.getToken());
-		System.out.println("The timestamp is: " + myuser.getTokenTime(myuser.getToken()));
-		if(myuser.isTokenValid(myuser.getToken()))
-			System.out.println("Token is good");	
 		manager.add(myuser);
 		
-		User newUser = manager.getUserByEmailAddress(myuser.getEmailAddress());
-		System.out.println("The users email is: " + newUser.getEmailAddress());
+		User userByEmailPass = manager.getUserByEmailAddressAndPassword("bob@gmail.com", "filmreel");
+		System.out.println("The token is: " + userByEmailPass.getToken());
 		
-		String encryptedText = manager.encrypt("My name is brayden");
-		String decryptedText = manager.decrypt(encryptedText);
-		System.out.println(encryptedText);
-		System.out.println(decryptedText);
+		User userByToken = manager.getUserByToken(userByEmailPass.getToken());
 		
+		if(manager.isTokenValid(userByToken))
+			System.out.println("Token is good");	
+		
+		System.out.println("The users email is: " + userByToken.getEmailAddress());
+		System.out.println("The token timestamp is: " + manager.getTokenTime(userByToken.getToken()));
 	}
 
 }

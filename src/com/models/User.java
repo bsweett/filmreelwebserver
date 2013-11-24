@@ -2,11 +2,8 @@ package com.models;
 
 
 import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -129,7 +126,7 @@ public class User {
 
 	public void updateFromUser(User user) {
 		setUserIdPrimarKey(user.getUserIdPrimarKey());
-		user.updateToken(); 
+		setToken(user.getToken());
 		setName(user.getName());
 		setEmailAddress(user.getEmailAddress());
 		setPassword(user.getPassword());
@@ -178,55 +175,4 @@ public class User {
 	public String getToken() {
 		return token;
 	}
-	
-	public void generateToken() {
-		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-		Calendar calendar = Calendar.getInstance();
-		
-		this.setToken(this.getName() + "$" + this.getPassword() + "$" + dateFormat.format(calendar.getTime()));
-	}
-	
-	public void updateToken() {
-		this.setToken(this.getName() + "$" + this.getPassword() + "$" + this.getTokenTime(this.getToken()));
-	}
-	
-	public String getTokenName(String token) {
-		String[] str_array = token.split("\\$");
-		return str_array[0];
-	}
-	
-	public String getTokenPassword(String token) {
-		String[] str_array = token.split("\\$");
-		return str_array[1];
-	}
-	
-	public String getTokenTime(String token) {
-		String[] str_array = token.split("\\$");
-		return str_array[2];
-	}
-	
-	//Have not tested this fully
-	public boolean isTokenValid(String token) {
-		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-		Calendar currentCalendar = Calendar.getInstance();
-		Calendar tokenCalendar = Calendar.getInstance();
-		try {
-			Date tokenDate = dateFormat.parse(this.getTokenTime(token));
-			tokenCalendar.setTime(tokenDate);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		currentCalendar.add(Calendar.HOUR_OF_DAY, -24);
-	
-		int result = tokenCalendar.getTime().compareTo(currentCalendar.getTime());
-		
-		if(result < 0) {
-			return false;
-		}
-		
-		else {
-			return true;
-		}
-	}
-	
 }

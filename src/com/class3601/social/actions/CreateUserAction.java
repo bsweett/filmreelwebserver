@@ -49,7 +49,7 @@ public class CreateUserAction extends ActionSupport implements ServletRequestAwa
 		
 		HibernateUserManager manager;
 		manager = HibernateUserManager.getDefault();
-		User testuser = manager.getUserByEmailAddressAndName(manager.encrypt(parameter3), manager.encrypt(parameter1));
+		User testuser = manager.getUserByEmailAddressAndPassword(parameter3, parameter2);
 		if(testuser == null)
 		{
 			System.out.println("TestUser is Null\n");
@@ -57,7 +57,6 @@ public class CreateUserAction extends ActionSupport implements ServletRequestAwa
 			newUser.setName(parameter1);
 			newUser.setPassword(parameter2);
 			newUser.setEmailAddress(parameter3);
-			newUser.generateToken();
 			manager.add(newUser);
 			messageStore.appendToMessage(XML_1);
 			messageStore.appendToMessage(XML_2);
