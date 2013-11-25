@@ -25,12 +25,6 @@ public class CreateUserAction extends ActionSupport implements ServletRequestAwa
 	private HttpServletRequest request;
 	
 	public String execute() throws Exception {
-		// HttpServletRequest request = ServletActionContext.getRequest();
-		// preferred method is to implement ServletRequestAware interface
-		// http://struts.apache.org/2.0.14/docs/how-can-we-access-the-httpservletrequest.html
-	
-		//http://localhost:8080/social/initial?parameter1=dog&parameter2=cat
-		//http://localhost:8080/social/initial?parameter1=dog&parameter2=error
 		String parameter1 = getServletRequest().getParameter(PARAMETER_1);
 		String  parameter2 = getServletRequest().getParameter(PARAMETER_2);
 		String  parameter3 = getServletRequest().getParameter(PARAMETER_3);
