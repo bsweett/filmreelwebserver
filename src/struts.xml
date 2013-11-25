@@ -16,11 +16,6 @@
 			<result>pages/welcome/index.jsp</result>
 		</action>
   		
-  		<action name="initial" class="com.class3601.social.actions.InitialTestAction" method="execute">
-    		<result name="success">pages/example/example-test.jsp</result>
-    		<result name="fail">pages/example/sample-errors.jsp</result>
-  		</action>
-  		
   		<action name="login" class="com.class3601.social.actions.LoginAction" method="execute">
     		<result name="success">pages/success/success-login.jsp</result>
     		<result name="fail">pages/error/error-fail.jsp</result>
@@ -37,6 +32,14 @@
     		<result name="success">pages/success/success-update.jsp</result>
     		<result name="fail">pages/error/error-fail.jsp</result>
     		<result name="TokenFailed">pages/error/error-token.jsp</result>
+  		</action>
+  		
+  		<action name="add" class="com.class3601.social.actions.AddFriendAction" method="execute">
+    		<result name="success">pages/success/success-add.jsp</result>
+    		<result name="fail">pages/error/error-fail.jsp</result>
+    		<result name="NoUserFound">pages/error/error-nouser.jsp</result>
+    		<result name="AlreadyFriends">pages/error/error-AlreadyFriends.jsp</result>
+    		<result name="CurrentUserError">pages/error/error-nouser.jsp</result>
   		</action>
 
 	</package>
