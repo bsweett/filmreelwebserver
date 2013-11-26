@@ -44,13 +44,13 @@ public class HibernateUserManager extends
 			+ USER_CLASS_NAME + " as user where user.token = :token";
 	private static String SELECT_USER_WITH_USER_PASSWORD = "from "
 			+ USER_CLASS_NAME
-			+ " as user where user.name = :username and user.password = :password";
+			+ " as user where user.name = :name and user.password = :password";
 
 	private static String SELECT_USER_WITH_EMAIL_ADDRESS = "from "
-			+ USER_CLASS_NAME + " as user where user.emailAddress = :email";
+			+ USER_CLASS_NAME + " as user where user.emailAddress = :emailAddress";
 	private static String SELECT_USER_WITH_EMAIL_AND_NAME = "from "
 			+ USER_CLASS_NAME
-			+ " as user where user.emailAddress = :email and user.name = :name";
+			+ " as user where user.emailAddress = :emailAddress and user.name = :name";
 
 	private static final String DROP_TABLE_SQL = "drop table " + USER_TABLE_NAME + ";";
 
@@ -213,7 +213,7 @@ public class HibernateUserManager extends
 			session = HibernateUtil.getCurrentSession();
 			transaction = session.beginTransaction();
 			Query query = session.createQuery(SELECT_USER_WITH_USER_PASSWORD);
-			query.setParameter("username", this.encrypt(name));
+			query.setParameter("name", this.encrypt(name));
 			query.setParameter("password", this.encrypt(password));
 			List<User> users = query.list();
 			transaction.commit();
@@ -245,7 +245,7 @@ public class HibernateUserManager extends
 			session = HibernateUtil.getCurrentSession();
 			transaction = session.beginTransaction();
 			Query query = session.createQuery(SELECT_USER_WITH_EMAIL_ADDRESS);
-			query.setParameter("email", this.encrypt(emailAddress));
+			query.setParameter("emailAddress", this.encrypt(emailAddress));
 			List<User> users = query.list();
 			transaction.commit();
 
@@ -275,7 +275,7 @@ public class HibernateUserManager extends
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public synchronized User getUserByEmailAddressAndName(String email, String name) 
+	public synchronized User getUserByEmailAddressAndName(String emailAddress, String name) 
 	{
 		System.out.println("====== IN GET USER BY EMAIL AND NAME =======");
 		Session session = null;
@@ -285,7 +285,7 @@ public class HibernateUserManager extends
 			session = HibernateUtil.getCurrentSession();
 			transaction = session.beginTransaction();
 			Query query = session.createQuery(SELECT_USER_WITH_EMAIL_AND_NAME);
-			query.setParameter("email", this.encrypt(email));
+			query.setParameter("emailAddress", this.encrypt(emailAddress));
 			query.setParameter("name", this.encrypt(name));
 			List<User> users = query.list();
 			transaction.commit();
