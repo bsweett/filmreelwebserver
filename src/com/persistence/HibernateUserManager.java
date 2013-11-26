@@ -192,6 +192,35 @@ public class HibernateUserManager extends
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
+	public synchronized User getUserByName(String name) {
+		
+		Session session = null;
+		Transaction transaction = null;
+		try {
+			session = HibernateUtil.getCurrentSession();
+			transaction = session.beginTransaction();
+			Query query = session.createQuery(SELECT_USER_WITH_NAME);
+			query.setParameter("name", this.encrypt(name));
+			List<User> users = query.list();
+			transaction.commit();
+
+			if (users.isEmpty()) {
+				return null;
+			} else {
+				User user = users.get(0);
+				return decryptUser(user);
+			}
+		} catch (HibernateException exception) {
+			BookingLogger.getDefault().severe(this,
+					Messages.METHOD_GET_USER_BY_EMAIL_ADDRESS,
+					"error.getUserByEmailAddressInDatabase", exception);
+			return null;
+		} finally {
+			closeSession();
+		}
+	}
+	
 	/**
 	 * Returns user without decrypted credit card information, 
 	 * from database based on given Name.
