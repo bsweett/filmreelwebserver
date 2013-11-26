@@ -61,6 +61,7 @@ public class CreateUserAction extends ActionSupport implements ServletRequestAwa
 			messageStore.appendToMessage(XML);
 			messageStore.appendToMessage(XML_USER);
 			messageStore.appendToMessage(XML_TOKEN);
+			System.out.println("The token is: " + newUser.getToken());
 			messageStore.appendToMessage(newUser.getToken());
 			messageStore.appendToMessage(XML_XTOKEN);
 			messageStore.appendToMessage(XML_MESSAGE);
