@@ -15,11 +15,17 @@ public class CreateUserAction extends ActionSupport implements ServletRequestAwa
     private static String PARAMETER_1 = "name";
     private static String PARAMETER_2 = "password";
     private static String PARAMETER_3 = "email";
-    private static String XML_1 = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\n";
-    private static String XML_2 = "<user>\n";
-    private static String XML_3 = "<token>";
-    private static String XML_5 = "</token>\n";
-    private static String XML_6 = "</user>\n";
+    private static String XML = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\n";
+    private static String XML_USER = "<user>\n";
+    private static String XML_TOKEN = "<token>";
+    private static String XML_XTOKEN = "</token>\n";
+    private static String XML_MESSAGE = "<message>";
+    private static String XML_XMESSAGE = "</message>\n";
+    private static String XML_NAME = "<name>";
+    private static String XML_XNAME = "</name>\n";
+    private static String XML_EMAIL = "<email>";
+    private static String XML_XEMAIL = "</email>\n";
+    private static String XML_XUSER = "</user>\n";
     
 	private MessageStore messageStore;
 	private HttpServletRequest request;
@@ -32,18 +38,18 @@ public class CreateUserAction extends ActionSupport implements ServletRequestAwa
 		
 		if(parameter1.isEmpty() || parameter2.isEmpty() || parameter3.isEmpty()) 
 		{
-			messageStore.appendToMessage(XML_1);
-			messageStore.appendToMessage(XML_2);
-			messageStore.appendToMessage(XML_3);
+			messageStore.appendToMessage(XML);
+			messageStore.appendToMessage(XML_USER);
+			messageStore.appendToMessage(XML_MESSAGE);
 			messageStore.appendToMessage("Fail");
-			messageStore.appendToMessage(XML_5);
-			messageStore.appendToMessage(XML_6);
+			messageStore.appendToMessage(XML_XMESSAGE);
+			messageStore.appendToMessage(XML_XUSER);
 			return "fail";
 		}
 		
 		HibernateUserManager manager;
 		manager = HibernateUserManager.getDefault();
-		User testuser = manager.getUserByEmailAddressAndPassword(parameter3, parameter2);
+		User testuser = manager.getUserByEmailAddressAndName(parameter3, parameter1);
 		if(testuser == null)
 		{
 			System.out.println("TestUser is Null\n");
@@ -52,22 +58,31 @@ public class CreateUserAction extends ActionSupport implements ServletRequestAwa
 			newUser.setPassword(parameter2);
 			newUser.setEmailAddress(parameter3);
 			manager.add(newUser);
-			messageStore.appendToMessage(XML_1);
-			messageStore.appendToMessage(XML_2);
-			messageStore.appendToMessage(XML_3);
+			messageStore.appendToMessage(XML);
+			messageStore.appendToMessage(XML_USER);
+			messageStore.appendToMessage(XML_TOKEN);
 			messageStore.appendToMessage(newUser.getToken());
-			messageStore.appendToMessage(XML_5);
-			messageStore.appendToMessage(XML_6);
+			messageStore.appendToMessage(XML_XTOKEN);
+			messageStore.appendToMessage(XML_MESSAGE);
+			messageStore.appendToMessage("Success");
+			messageStore.appendToMessage(XML_XMESSAGE);
+			messageStore.appendToMessage(XML_NAME);
+			messageStore.appendToMessage(parameter1);
+			messageStore.appendToMessage(XML_XNAME);
+			messageStore.appendToMessage(XML_EMAIL);
+			messageStore.appendToMessage(parameter3);
+			messageStore.appendToMessage(XML_XEMAIL);
+			messageStore.appendToMessage(XML_XUSER);
 			return "success";
 		} 
 		else 
 		{
-			messageStore.appendToMessage(XML_1);
-			messageStore.appendToMessage(XML_2);
-			messageStore.appendToMessage(XML_3);
+			messageStore.appendToMessage(XML);
+			messageStore.appendToMessage(XML_USER);
+			messageStore.appendToMessage(XML_MESSAGE);
 			messageStore.appendToMessage("UserAlreadyExists");
-			messageStore.appendToMessage(XML_5);
-			messageStore.appendToMessage(XML_6);
+			messageStore.appendToMessage(XML_XMESSAGE);
+			messageStore.appendToMessage(XML_XUSER);
 			return "UserAlreadyExists";
 		}
 	}	

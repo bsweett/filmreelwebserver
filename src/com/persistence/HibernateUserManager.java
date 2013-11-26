@@ -48,9 +48,9 @@ public class HibernateUserManager extends
 
 	private static String SELECT_USER_WITH_EMAIL_ADDRESS = "from "
 			+ USER_CLASS_NAME + " as user where user.emailAddress = :email";
-	private static String SELECT_USER_WITH_EMAIL_AND_PASSWORD = "from "
+	private static String SELECT_USER_WITH_EMAIL_AND_NAME = "from "
 			+ USER_CLASS_NAME
-			+ " as user where user.emailAddress = :email and user.password = :password";
+			+ " as user where user.emailAddress = :email and user.name = :name";
 
 	private static final String DROP_TABLE_SQL = "drop table " + USER_TABLE_NAME + ";";
 
@@ -152,7 +152,7 @@ public class HibernateUserManager extends
 	 */
 	public synchronized boolean update(User user) {
 		user.setToken(updateToken(user));
-		boolean result = super.update(user);	
+		boolean result = super.update(this.encryptUser(user));	
 		return result;
 	}
 
@@ -237,45 +237,6 @@ public class HibernateUserManager extends
 	}
 	
 	@SuppressWarnings("unchecked")
-	public synchronized User getUserByName(String name) 
-	{
-		System.out.println("======IN GET USER BY NAME =======");
-		
-		Session session = null;
-		Transaction transaction = null;
-		try 
-		{
-			session = HibernateUtil.getCurrentSession();
-			transaction = session.beginTransaction();
-			Query query = session.createQuery(SELECT_USER_WITH_NAME);
-			query.setParameter("name", this.encrypt(name));
-			List<User> users = query.list();
-			transaction.commit();
-
-			if (users.isEmpty()) 
-			{
-				System.out.println("Get User By Name Failed\n");
-				return null;
-			} 
-			else 
-			{
-				User user = users.get(0);
-				System.out.println("Got User by Name\n");
-				return decryptUser(user);
-			}
-		} 
-		catch (HibernateException exception) 
-		{
-			BookingLogger.getDefault().severe(this, Messages.METHOD_GET_USER_BY_EMAIL_ADDRESS, "error.getUserByEmailAddressInDatabase", exception);
-			return null;
-		} 
-		finally 
-		{
-			closeSession();
-		}
-	}
-	
-	@SuppressWarnings("unchecked")
 	public synchronized User getUserByEmailAddress(String emailAddress) {
 		
 		Session session = null;
@@ -305,7 +266,7 @@ public class HibernateUserManager extends
 	}
 
 	/**
-	 * Returns user from database based on given email and password.
+	 * Returns user from database based on given email and name.
 	 * If not found returns null.
 	 * Upon error returns null.
 	 * 
@@ -314,7 +275,7 @@ public class HibernateUserManager extends
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public synchronized User getUserByEmailAddressAndPassword(String emailAddress, String password) 
+	public synchronized User getUserByEmailAddressAndName(String email, String name) 
 	{
 		System.out.println("====== IN GET USER BY EMAIL AND NAME =======");
 		Session session = null;
@@ -323,9 +284,9 @@ public class HibernateUserManager extends
 		try {
 			session = HibernateUtil.getCurrentSession();
 			transaction = session.beginTransaction();
-			Query query = session.createQuery(SELECT_USER_WITH_EMAIL_AND_PASSWORD);
-			query.setParameter("email", this.encrypt(emailAddress));
-			query.setParameter("password", this.encrypt(password));
+			Query query = session.createQuery(SELECT_USER_WITH_EMAIL_AND_NAME);
+			query.setParameter("email", this.encrypt(email));
+			query.setParameter("name", this.encrypt(name));
 			List<User> users = query.list();
 			transaction.commit();
 
@@ -576,17 +537,22 @@ public class HibernateUserManager extends
 		
 	//Updates an existing token
 	public String updateToken(User user) {
-		String plainToken = decrypt(user.getToken());
-		return encrypt(this.getTokenName(plainToken) + "$" + this.getTokenPassword(plainToken) + "$" + this.getTokenTime(plainToken));
+		return encrypt(this.getTokenName(user.getToken()) + "$" + this.getTokenPassword(user.getToken()) + "$" + this.getTokenTime(user.getToken()));
 	}
 	
 	//Have not tested this fully
-	public boolean isTokenValid(User user) {
+	public boolean isTokenValid(String token) {
+		User user = this.getUserByToken(token);
+		
+		if(user == null) {
+			return false;
+		}
+		
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		Calendar currentCalendar = Calendar.getInstance();
 		Calendar tokenCalendar = Calendar.getInstance();
 		try {
-			Date tokenDate = dateFormat.parse(this.getTokenTime(user.getToken()));
+			Date tokenDate = dateFormat.parse(this.getTokenTime(token));
 			tokenCalendar.setTime(tokenDate);
 		} catch (ParseException e) {
 				e.printStackTrace();

@@ -14,16 +14,16 @@ import com.persistence.HibernateUserManager;
 public class AddFriendAction extends ActionSupport implements ServletRequestAware {
 	
 	private static final long serialVersionUID = 1L;
-    private static String PARAMETER_1 = "name";
-    private static String PARAMETER_2 = "friend";
+    private static String PARAMETER_1 = "token";
+    private static String PARAMETER_2 = "femail";
     private static String XML_1 = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\n";
     private static String XML_2 = "<user>\n";
-    private static String XML_3 = "<name>";
+    private static String XML_3 = "<token>";
     
-    private static String XML_5 = "</name>\n";
-    private static String XML_6 = "<friend>";
+    private static String XML_5 = "</token>\n";
+    private static String XML_6 = "<femail>";
     
-    private static String XML_8 = "</friend>\n";
+    private static String XML_8 = "</femail>\n";
     private static String XML_9 = "</user>\n";
     
 	private MessageStore messageStore;
@@ -50,26 +50,26 @@ public class AddFriendAction extends ActionSupport implements ServletRequestAwar
 		
 		HibernateUserManager manager;
 		manager = HibernateUserManager.getDefault();
-		User currentUser = manager.getUserByName(manager.encrypt(parameter1));
+		User currentUser = manager.getUserByToken(parameter1);
 		
-		// This should never happen if user exists
-		if(currentUser == null)
+		// Check the users token
+		if(!manager.isTokenValid(parameter1))
 		{
 			System.out.println("TestUser is Null\n");
 			messageStore.appendToMessage(XML_1);
 			messageStore.appendToMessage(XML_2);
 			messageStore.appendToMessage(XML_3);
-			messageStore.appendToMessage("CurrentUserError");
+			messageStore.appendToMessage("InvalidToken");
 			messageStore.appendToMessage(XML_5);
 			messageStore.appendToMessage(XML_6);
-			messageStore.appendToMessage("CurrentUserError");
+			messageStore.appendToMessage("InvalidToken");
 			messageStore.appendToMessage(XML_8);
 			messageStore.appendToMessage(XML_9);
 			return "CurrentUserError";
 		} 
 		else 
 		{
-			User searchForFriend = manager.getUserByName(manager.encrypt(parameter2));
+			User searchForFriend = manager.getUserByEmailAddress(parameter2);
 			
 			// Check if friend to add exists
 			if(searchForFriend == null)

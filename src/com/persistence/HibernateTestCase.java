@@ -23,12 +23,12 @@ public class HibernateTestCase {
 		myuser.setUserBio("Just your everyday normal user object");
 		manager.add(myuser);
 		
-		User userByEmailPass = manager.getUserByEmailAddressAndPassword("bob@gmail.com", "filmreel");
+		User userByEmailPass = manager.getUserByEmailAddressAndName("bob@gmail.com", "TestUser");
 		System.out.println("The token is: " + userByEmailPass.getToken());
 		
 		User userByToken = manager.getUserByToken(userByEmailPass.getToken());
 		
-		if(manager.isTokenValid(userByToken))
+		if(manager.isTokenValid(userByToken.getToken()))
 			System.out.println("Token is good");	
 		
 		System.out.println("The users email is: " + userByToken.getEmailAddress());
