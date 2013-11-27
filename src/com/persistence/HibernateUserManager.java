@@ -501,7 +501,6 @@ public class HibernateUserManager extends
 		user.setPassword(encrypt(user.getPassword()));
 		user.setLocation(encrypt(user.getLocation()));
 		user.setUserBio(encrypt(user.getUserBio()));
-		user.setImagePath(encrypt(user.getImagePath()));
 		
 		return user;
 	}
@@ -512,7 +511,6 @@ public class HibernateUserManager extends
 		user.setPassword(decrypt(user.getPassword()));
 		user.setLocation(decrypt(user.getLocation()));
 		user.setUserBio(decrypt(user.getUserBio()));
-		user.setImagePath(decrypt(user.getImagePath()));
 		
 		return user;
 	}

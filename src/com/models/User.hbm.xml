@@ -40,8 +40,8 @@
             <column name="USERBIO" sql-type="tinytext" not-null="true"/>
         </property>
         
-         <property name="imagePath">
-            <column name="IMAGEPATH" sql-type="tinytext" not-null="true"/>
+         <property name="image">
+            <column name="IMAGE" sql-type="blob" not-null="true"/>
         </property>
         
         <property name="count">
