@@ -78,7 +78,7 @@ public class GetFriendData extends ActionSupport implements ServletRequestAware{
 			messageStore.appendToMessage(user.getLocation());
 			messageStore.appendToMessage(XML_XLOCATION);
 			messageStore.appendToMessage(XML_BIO);
-			messageStore.appendToMessage(user.getUserBio());
+			messageStore.appendToMessage(user.getBio());
 			messageStore.appendToMessage(XML_XBIO);
 			messageStore.appendToMessage(XML_IMAGE);
 			messageStore.appendToMessage(new String(user.getImage()));

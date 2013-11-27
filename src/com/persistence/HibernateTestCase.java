@@ -18,7 +18,7 @@ public class HibernateTestCase {
 		myuser.setName("TestUser");
 		myuser.setEmailAddress("bob@gmail.com");
 		myuser.setPassword("filmreel");
-		myuser.setImage(new byte[1]);
+		myuser.setImage(new byte[0]);
 		myuser.setLocation("Ottawa");
 		myuser.setBio("Just your everyday normal user object");
 		manager.add(myuser);

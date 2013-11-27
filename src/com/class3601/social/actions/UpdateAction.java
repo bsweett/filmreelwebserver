@@ -97,7 +97,7 @@ public class UpdateAction extends ActionSupport implements ServletRequestAware {
 		{	
 			testuser.setName(manager.encrypt(parameter2));
 			testuser.setLocation(manager.encrypt(parameter3));
-			testuser.setUserBio(manager.encrypt(parameter4));
+			testuser.setBio(manager.encrypt(parameter4));
 			manager.update(testuser);
 			
 			// For now send all the stuff back to the client
@@ -115,7 +115,7 @@ public class UpdateAction extends ActionSupport implements ServletRequestAware {
 			messageStore.appendToMessage(testuser.getLocation());
 			messageStore.appendToMessage(XML_11);
 			messageStore.appendToMessage(XML_12);
-			messageStore.appendToMessage(testuser.getUserBio());
+			messageStore.appendToMessage(testuser.getBio());
 			messageStore.appendToMessage(XML_14);
 			messageStore.appendToMessage(XML_15);
 			return "success";
