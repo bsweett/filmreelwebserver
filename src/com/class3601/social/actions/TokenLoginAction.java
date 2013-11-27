@@ -1,5 +1,7 @@
 package com.class3601.social.actions;
 
+import java.net.URLEncoder;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts2.interceptor.ServletRequestAware;
@@ -24,6 +26,8 @@ public class TokenLoginAction extends ActionSupport implements ServletRequestAwa
 	public String execute() throws Exception 
 	{
 		String parameter1 = getServletRequest().getParameter(PARAMETER_1);
+		parameter1 = parameter1.replace(" ", "+");
+		System.out.println(parameter1);
 		messageStore = new MessageStore();
 				
 		if(parameter1.isEmpty()) 
@@ -43,6 +47,7 @@ public class TokenLoginAction extends ActionSupport implements ServletRequestAwa
 		
 		if(manager.isTokenValid(parameter1)) 
 		{
+			System.out.println("Token is Valid\n");
 			messageStore.appendToMessage(XML);
 			messageStore.appendToMessage(XML_USER);
 			messageStore.appendToMessage(XML_MESSAGE);
@@ -54,6 +59,7 @@ public class TokenLoginAction extends ActionSupport implements ServletRequestAwa
 		
 		else 
 		{
+			System.out.println("Token is inValid\n");
 			messageStore.appendToMessage(XML);
 			messageStore.appendToMessage(XML_USER);
 			messageStore.appendToMessage(XML_MESSAGE);

@@ -35,6 +35,7 @@ public class GetUserData extends ActionSupport implements ServletRequestAware{
 	
 	public String execute() throws Exception {
 		String parameter1 = getServletRequest().getParameter(PARAMETER_1);
+		parameter1 = parameter1.replace(" ", "+");
 		messageStore = new MessageStore();
 		
 		if(parameter1.isEmpty()) 
@@ -62,7 +63,7 @@ public class GetUserData extends ActionSupport implements ServletRequestAware{
 			messageStore.appendToMessage(XML_XMESSAGE);
 			messageStore.appendToMessage(XML_XUSER);
 			
-			return "fail";
+			return "UserNotFound";
 		} 
 		else 
 		{

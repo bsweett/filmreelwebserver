@@ -55,6 +55,7 @@
   		<action name="getuserdata" class="com.class3601.social.actions.GetUserData" method="execute">
     		<result name="success">pages/success/success-send.jsp</result>
     		<result name="fail">pages/error/error-fail.jsp</result>
+    		<result name="UserNotFound">pages/error/error-nouser.jsp</result>
   		</action>
   		
   		<action name="getfrienddata" class="com.class3601.social.actions.GetFriendData" method="execute">
