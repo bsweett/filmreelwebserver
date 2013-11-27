@@ -60,7 +60,7 @@ public class HibernateUserManager extends
 		+ USER_CLASS_NAME;
 	
 	private static final String CREATE_TABLE_SQL = "create table " + USER_TABLE_NAME + "(USER_ID_PRIMARY_KEY char(36) primary key,"
-			+ "TOKEN tinytext, NAME tinytext, EMAIL_ADDRESS tinytext, PASSWORD tinytext, LOCATION tinytext, USERBIO tinytext, IMAGEPATH tinytext, COUNT int,"
+			+ "TOKEN tinytext, NAME tinytext, EMAIL_ADDRESS tinytext, PASSWORD tinytext, LOCATION tinytext, BIO tinytext, IMAGE blob, COUNT int,"
 			+ "CREATION_TIME timestamp, LAST_UPDATE_TIME timestamp, LAST_ACCESSED_TIME timestamp);";
 
 	private static final String CREATE_JOIN_TABLE_SQL = "create table " + USER_JOIN_TABLE_NAME + "(USER_ID char(36), FRIEND_USER_ID char(36));";
@@ -500,7 +500,7 @@ public class HibernateUserManager extends
 		user.setEmailAddress(encrypt(user.getEmailAddress()));
 		user.setPassword(encrypt(user.getPassword()));
 		user.setLocation(encrypt(user.getLocation()));
-		user.setUserBio(encrypt(user.getUserBio()));
+		user.setBio(encrypt(user.getBio()));
 		
 		return user;
 	}
@@ -510,7 +510,7 @@ public class HibernateUserManager extends
 		user.setEmailAddress(decrypt(user.getEmailAddress()));
 		user.setPassword(decrypt(user.getPassword()));
 		user.setLocation(decrypt(user.getLocation()));
-		user.setUserBio(decrypt(user.getUserBio()));
+		user.setBio(decrypt(user.getBio()));
 		
 		return user;
 	}

@@ -36,8 +36,8 @@
             <column name="LOCATION" sql-type="tinytext" not-null="true"/>
         </property>
         
-        <property name="userBio">
-            <column name="USERBIO" sql-type="tinytext" not-null="true"/>
+        <property name="bio">
+            <column name="BIO" sql-type="tinytext" not-null="true"/>
         </property>
         
          <property name="image">
