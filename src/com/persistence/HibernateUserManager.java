@@ -569,6 +569,7 @@ public class HibernateUserManager extends
 	
 	//Have not tested this fully
 	public boolean isTokenValid(String token) {
+		
 		User user = this.getUserByToken(token);
 		
 		if(user == null) {

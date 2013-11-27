@@ -5,12 +5,14 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.struts2.interceptor.ServletRequestAware;
 
 import com.class3601.social.common.MessageStore;
+import com.models.User;
 import com.opensymphony.xwork2.ActionSupport;
 import com.persistence.HibernateUserManager;
 
-public class TokenLoginAction extends ActionSupport implements ServletRequestAware{
+public class GetInboxAction extends ActionSupport implements ServletRequestAware{
 	private static final long serialVersionUID = 1L;
     private static String PARAMETER_1 = "token";
+    private static String PARAMETER_2 = "type";
     private static String XML = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\n";
     private static String XML_USER = "<user>\n";
     private static String XML_MESSAGE = "<message>";
@@ -24,9 +26,10 @@ public class TokenLoginAction extends ActionSupport implements ServletRequestAwa
 	public String execute() throws Exception 
 	{
 		String parameter1 = getServletRequest().getParameter(PARAMETER_1);
+		String parameter2 = getServletRequest().getParameter(PARAMETER_2);
 		messageStore = new MessageStore();
 				
-		if(parameter1.isEmpty()) 
+		if(parameter1.isEmpty() && parameter2.isEmpty()) 
 		{
 			messageStore.appendToMessage(XML);
 			messageStore.appendToMessage(XML_USER);
@@ -39,17 +42,18 @@ public class TokenLoginAction extends ActionSupport implements ServletRequestAwa
 		
 		HibernateUserManager manager;
 		manager = HibernateUserManager.getDefault();
-		System.out.println("The token is: " + parameter1);
 		
-		if(manager.isTokenValid(parameter1)) 
+		User user = manager.getUserByToken(parameter1);
+		
+		if(user == null) 
 		{
 			messageStore.appendToMessage(XML);
 			messageStore.appendToMessage(XML_USER);
 			messageStore.appendToMessage(XML_MESSAGE);
-			messageStore.appendToMessage("Valid");
+			messageStore.appendToMessage("InvalidUser");
 			messageStore.appendToMessage(XML_XMESSAGE);
 			messageStore.appendToMessage(XML_XUSER);
-			return "success";
+			return "fail";
 		}
 		
 		else 

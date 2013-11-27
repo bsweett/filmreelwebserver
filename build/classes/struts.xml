@@ -67,6 +67,11 @@
     		<result name="fail">pages/error/error-fail.jsp</result>
   		</action>
   		
+  		<action name="getinbox" class="com.class3601.social.actions.GetInboxAction" method="execute">
+    		<result name="success">pages/success/success-send.jsp</result>
+    		<result name="fail">pages/error/error-fail.jsp</result>
+  		</action>
+  		
 
 	</package>
 
