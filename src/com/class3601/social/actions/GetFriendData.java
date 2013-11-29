@@ -14,6 +14,9 @@ public class GetFriendData extends ActionSupport implements ServletRequestAware{
     private static String PARAMETER_1 = "email";
     private static String XML = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\n";
     private static String XML_USER = "<user>\n";
+    private static String XML_XUSER = "</user>\n";
+    private static String XML_DATA = "<data>\n";
+    private static String XML_XDATA = "</data>\n";
     private static String XML_TOKEN = "<token>";
     private static String XML_XTOKEN = "</token>\n";
     private static String XML_MESSAGE = "<message>";
@@ -28,7 +31,7 @@ public class GetFriendData extends ActionSupport implements ServletRequestAware{
     private static String XML_XBIO = "</bio>\n";
     private static String XML_IMAGE = "<image>";
     private static String XML_XIMAGE = "</image>\n";
-    private static String XML_XUSER = "</user>\n";
+    
     
 	private MessageStore messageStore;
 	private HttpServletRequest request;
@@ -40,11 +43,11 @@ public class GetFriendData extends ActionSupport implements ServletRequestAware{
 		if(parameter1.isEmpty()) 
 		{
 			messageStore.appendToMessage(XML);
-			messageStore.appendToMessage(XML_USER);
+			messageStore.appendToMessage(XML_DATA);
 			messageStore.appendToMessage(XML_MESSAGE);
 			messageStore.appendToMessage("Fail");
 			messageStore.appendToMessage(XML_XMESSAGE);
-			messageStore.appendToMessage(XML_XUSER);
+			messageStore.appendToMessage(XML_XDATA);
 			return "fail";
 		}
 		
@@ -56,11 +59,11 @@ public class GetFriendData extends ActionSupport implements ServletRequestAware{
 		if(user == null)
 		{
 			messageStore.appendToMessage(XML);
-			messageStore.appendToMessage(XML_USER);
+			messageStore.appendToMessage(XML_DATA);
 			messageStore.appendToMessage(XML_MESSAGE);
 			messageStore.appendToMessage("UserNotFound");
 			messageStore.appendToMessage(XML_XMESSAGE);
-			messageStore.appendToMessage(XML_XUSER);
+			messageStore.appendToMessage(XML_XDATA);
 			
 			return "fail";
 		} 

@@ -1,7 +1,5 @@
 package com.class3601.social.actions;
 
-import java.net.URLEncoder;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts2.interceptor.ServletRequestAware;
@@ -14,11 +12,10 @@ public class TokenLoginAction extends ActionSupport implements ServletRequestAwa
 	private static final long serialVersionUID = 1L;
     private static String PARAMETER_1 = "token";
     private static String XML = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\n";
-    private static String XML_USER = "<user>\n";
+    private static String XML_DATA = "<data>\n";
+    private static String XML_XDATA = "</data>";
     private static String XML_MESSAGE = "<message>";
     private static String XML_XMESSAGE = "</message>\n";
-    private static String XML_XUSER = "</user>";
-
     
 	private MessageStore messageStore;
 	private HttpServletRequest request;
@@ -33,11 +30,11 @@ public class TokenLoginAction extends ActionSupport implements ServletRequestAwa
 		if(parameter1.isEmpty()) 
 		{
 			messageStore.appendToMessage(XML);
-			messageStore.appendToMessage(XML_USER);
+			messageStore.appendToMessage(XML_DATA);
 			messageStore.appendToMessage(XML_MESSAGE);
 			messageStore.appendToMessage("Fail");
 			messageStore.appendToMessage(XML_XMESSAGE);
-			messageStore.appendToMessage(XML_XUSER);
+			messageStore.appendToMessage(XML_XDATA);
 			return "fail"; 
 		}
 		
@@ -49,11 +46,11 @@ public class TokenLoginAction extends ActionSupport implements ServletRequestAwa
 		{
 			System.out.println("Token is Valid\n");
 			messageStore.appendToMessage(XML);
-			messageStore.appendToMessage(XML_USER);
+			messageStore.appendToMessage(XML_DATA);
 			messageStore.appendToMessage(XML_MESSAGE);
 			messageStore.appendToMessage("Valid");
 			messageStore.appendToMessage(XML_XMESSAGE);
-			messageStore.appendToMessage(XML_XUSER);
+			messageStore.appendToMessage(XML_XDATA);
 			return "success";
 		}
 		
@@ -61,11 +58,11 @@ public class TokenLoginAction extends ActionSupport implements ServletRequestAwa
 		{
 			System.out.println("Token is inValid\n");
 			messageStore.appendToMessage(XML);
-			messageStore.appendToMessage(XML_USER);
+			messageStore.appendToMessage(XML_DATA);
 			messageStore.appendToMessage(XML_MESSAGE);
 			messageStore.appendToMessage("Invalid");
 			messageStore.appendToMessage(XML_XMESSAGE);
-			messageStore.appendToMessage(XML_XUSER);
+			messageStore.appendToMessage(XML_XDATA);
 			return "fail";
 		}
 	}	

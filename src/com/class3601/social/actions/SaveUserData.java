@@ -19,10 +19,9 @@ public class SaveUserData extends ActionSupport implements ServletRequestAware {
     private static String PARAMETER_5 = "bio";
     private static String XML = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\n";
     private static String XML_DATA = "<user>\n";
+    private static String XML_XDATA = "</user>\n";
     private static String XML_MESSAGE = "<message>";
     private static String XML_XMESSAGE = "</message>\n";
-    private static String XML_XDATA = "</user>\n";
-
     
 	private MessageStore messageStore;
 	private HttpServletRequest request;

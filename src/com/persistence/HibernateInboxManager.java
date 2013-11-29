@@ -4,11 +4,6 @@ import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import javax.crypto.BadPaddingException;
@@ -20,11 +15,9 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Base64;
 import org.hibernate.HibernateException;
-import org.hibernate.ObjectNotFoundException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.exception.JDBCConnectionException;
 
 import com.common.BookingLogger;
 import com.common.Messages;
@@ -171,6 +164,18 @@ private static final byte[] KEY = ";EZ¼å6WSÝÝÔ™S".getBytes();
 		finally {
 			closeSession();
 		}
+	}
+	
+	//Need to get all messages for given token and return them
+	public synchronized String[] getMessagesForToken(String token) 
+	{
+		return null;
+	}
+	
+	//Need to get all messages for given token and return them
+	public synchronized byte[][] getSnapsForToken(String token) 
+	{
+		return null;
 	}
 	
 	public String getTableName() { return INBOX_TABLE_NAME; }

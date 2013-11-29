@@ -20,20 +20,28 @@ public class LoginAction extends ActionSupport implements ServletRequestAware {
     private static String XML_XTOKEN = "</token>\n";
     private static String XML_MESSAGE = "<message>";
     private static String XML_XMESSAGE = "</message>\n";
-    private static String XML_XUSER = "</user>\n";
-
-    
+    private static String XML_NAME = "<name>";
+    private static String XML_XNAME = "</name>\n";
+    private static String XML_EMAIL = "<email>";
+    private static String XML_XEMAIL = "</email>\n";
+    private static String XML_LOCATION = "<location>";
+    private static String XML_XLOCATION = "</location>\n";
+    private static String XML_BIO = "<bio>";
+    private static String XML_XBIO = "</bio>\n";
+    private static String XML_IMAGE = "<image>";
+    private static String XML_XIMAGE = "</image>\n";
+    private static String XML_XUSER = "</user>\n";   
 	private MessageStore messageStore;
 	private HttpServletRequest request;
 	
 	public String execute() throws Exception 
 	{
-		String parameter1 = getServletRequest().getParameter(PARAMETER_1);
-		String  parameter2 = getServletRequest().getParameter(PARAMETER_2);
-		parameter2 = parameter2.replace(" ", "+");
+		String username = getServletRequest().getParameter(PARAMETER_1);
+		String  password = getServletRequest().getParameter(PARAMETER_2);
+		password = password.replace(" ", "+");
 		messageStore = new MessageStore();
 				
-		if(parameter1.isEmpty() || parameter2.isEmpty()) 
+		if(username.isEmpty() || password.isEmpty()) 
 		{
 			messageStore.appendToMessage(XML);
 			messageStore.appendToMessage(XML_USER);
@@ -47,8 +55,9 @@ public class LoginAction extends ActionSupport implements ServletRequestAware {
 		HibernateUserManager manager;
 		manager = HibernateUserManager.getDefault();
 
-		User testuser = manager.getUserByNameAndPassword(parameter1, parameter2);
-		if(testuser == null) 
+		User user = manager.getUserByNameAndPassword(username, password);
+		
+		if(user == null) 
 		{
 			messageStore.appendToMessage(XML);
 			messageStore.appendToMessage(XML_USER);
@@ -61,21 +70,36 @@ public class LoginAction extends ActionSupport implements ServletRequestAware {
 		
 		else 
 		{
-			System.out.println("Hello world");
-			testuser.incramentCount();
-			testuser.setToken(manager.generateToken(testuser));
-			manager.update(testuser);
-			
-			System.out.println("The token is:" + testuser.getToken());
+			user.incramentCount();
+			user.setToken(manager.generateToken(user));
+	
 			messageStore.appendToMessage(XML);
 			messageStore.appendToMessage(XML_USER);
+			messageStore.appendToMessage(XML_TOKEN);
+			messageStore.appendToMessage(user.getToken());
+			messageStore.appendToMessage(XML_XTOKEN);
+			messageStore.appendToMessage(XML_NAME);
+			messageStore.appendToMessage(user.getName());
+			messageStore.appendToMessage(XML_XNAME);
+			messageStore.appendToMessage(XML_EMAIL);
+			messageStore.appendToMessage(user.getEmailAddress());
+			messageStore.appendToMessage(XML_XEMAIL);
+			messageStore.appendToMessage(XML_LOCATION);
+			messageStore.appendToMessage(user.getLocation());
+			messageStore.appendToMessage(XML_XLOCATION);
+			messageStore.appendToMessage(XML_BIO);
+			messageStore.appendToMessage(user.getBio());
+			messageStore.appendToMessage(XML_XBIO);
+			messageStore.appendToMessage(XML_IMAGE);
+			messageStore.appendToMessage(user.getImage());
+			messageStore.appendToMessage(XML_XIMAGE);
 			messageStore.appendToMessage(XML_MESSAGE);
 			messageStore.appendToMessage("Success");
 			messageStore.appendToMessage(XML_XMESSAGE);
-			messageStore.appendToMessage(XML_TOKEN);
-			messageStore.appendToMessage(testuser.getToken());
-			messageStore.appendToMessage(XML_XTOKEN);
 			messageStore.appendToMessage(XML_XUSER);
+			
+			manager.update(user);
+			
 			return "success";
 		}
 	}	

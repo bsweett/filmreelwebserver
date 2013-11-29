@@ -5,19 +5,22 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.struts2.interceptor.ServletRequestAware;
 
 import com.class3601.social.common.MessageStore;
-import com.models.User;
 import com.opensymphony.xwork2.ActionSupport;
-import com.persistence.HibernateUserManager;
+import com.persistence.HibernateInboxManager;
 
 public class GetInboxAction extends ActionSupport implements ServletRequestAware{
 	private static final long serialVersionUID = 1L;
     private static String PARAMETER_1 = "token";
     private static String PARAMETER_2 = "type";
     private static String XML = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\n";
-    private static String XML_USER = "<user>\n";
+    private static String XML_DATA = "<data>\n";
+    private static String XML_XDATA = "</data>";
     private static String XML_MESSAGE = "<message>";
     private static String XML_XMESSAGE = "</message>\n";
-    private static String XML_XUSER = "</user>";
+    private static String XML_SNAP = "<snap>";
+    private static String XML_XSNAP = "</snap>\n";
+    private static String XML_FNAME = "<fname>";
+    private static String XML_XFNAME = "</fname>\n";
 
     
 	private MessageStore messageStore;
@@ -25,47 +28,66 @@ public class GetInboxAction extends ActionSupport implements ServletRequestAware
 	
 	public String execute() throws Exception 
 	{
-		String parameter1 = getServletRequest().getParameter(PARAMETER_1);
-		parameter1 = parameter1.replace(" ", "+");
-		String parameter2 = getServletRequest().getParameter(PARAMETER_2);
+		String token = getServletRequest().getParameter(PARAMETER_1);
+		token = token.replace(" ", "+");
+		String type = getServletRequest().getParameter(PARAMETER_2);
 		messageStore = new MessageStore();
 				
-		if(parameter1.isEmpty() && parameter2.isEmpty()) 
+		if(token.isEmpty() && type.isEmpty()) 
 		{
 			messageStore.appendToMessage(XML);
-			messageStore.appendToMessage(XML_USER);
+			messageStore.appendToMessage(XML_DATA);
 			messageStore.appendToMessage(XML_MESSAGE);
 			messageStore.appendToMessage("Fail");
 			messageStore.appendToMessage(XML_XMESSAGE);
-			messageStore.appendToMessage(XML_XUSER);
+			messageStore.appendToMessage(XML_XDATA);
 			return "fail"; 
 		}
 		
-		HibernateUserManager manager;
-		manager = HibernateUserManager.getDefault();
+		HibernateInboxManager manager;
+		manager = HibernateInboxManager.getDefault();
 		
-		User user = manager.getUserByToken(parameter1);
+		String[] friendRequests = manager.getMessagesForToken(token);
+		byte[][] snaps = manager.getSnapsForToken(token);
 		
-		if(user == null) 
+		if(friendRequests == null && snaps == null) 
 		{
 			messageStore.appendToMessage(XML);
-			messageStore.appendToMessage(XML_USER);
+			messageStore.appendToMessage(XML_DATA);
 			messageStore.appendToMessage(XML_MESSAGE);
-			messageStore.appendToMessage("InvalidUser");
+			messageStore.appendToMessage("NoNewMail");
 			messageStore.appendToMessage(XML_XMESSAGE);
-			messageStore.appendToMessage(XML_XUSER);
+			messageStore.appendToMessage(XML_XDATA);
 			return "fail";
 		}
 		
 		else 
 		{
-			messageStore.appendToMessage(XML);
-			messageStore.appendToMessage(XML_USER);
-			messageStore.appendToMessage(XML_MESSAGE);
-			messageStore.appendToMessage("Invalid");
-			messageStore.appendToMessage(XML_XMESSAGE);
-			messageStore.appendToMessage(XML_XUSER);
-			return "fail";
+			if(type.equals("snap")) {
+				messageStore.appendToMessage(XML);
+				messageStore.appendToMessage(XML_DATA);
+				messageStore.appendToMessage(XML_MESSAGE);
+				messageStore.appendToMessage("Success");
+				messageStore.appendToMessage(XML_XMESSAGE);
+				messageStore.appendToMessage(XML_SNAP);
+				messageStore.appendToMessage("Snaps array sent to the person goes here");
+				messageStore.appendToMessage(XML_XSNAP);
+				messageStore.appendToMessage(XML_XDATA);
+				return "success";
+			}
+			else {
+				messageStore.appendToMessage(XML);
+				messageStore.appendToMessage(XML_DATA);
+				messageStore.appendToMessage(XML_MESSAGE);
+				messageStore.appendToMessage("Success");
+				messageStore.appendToMessage(XML_XMESSAGE);
+				messageStore.appendToMessage(XML_FNAME);
+				messageStore.appendToMessage("Friend Request array of who added the person goes here");
+				messageStore.appendToMessage(XML_XFNAME);
+				messageStore.appendToMessage(XML_XDATA);
+				return "success";
+			}
+			
 		}
 	}	
 		
