@@ -20,7 +20,7 @@ public class User {
 	private Timestamp lastAccessedTimestamp;
 	private String location;
 	private String bio;
-	private byte[] image;
+	private String image;
 	private int count;
 	private Set<User> friends = new HashSet<User>(0);
 
@@ -31,7 +31,7 @@ public class User {
 		setPassword(Messages.UNKNOWN);
 		setLocation(Messages.UNKNOWN);
 		setBio(Messages.UNKNOWN);
-		setImage(new byte[0]);
+		setImage(Messages.UNKNOWN);
 		setCount(0);
 		setCreationTimestamp(new Timestamp(calendar.getTimeInMillis()));
 		setLastUpdateTimestamp(new Timestamp(calendar.getTimeInMillis()));
@@ -116,11 +116,11 @@ public class User {
 		return bio;
 	}
 	
-	public void setImage(byte[] image) {
+	public void setImage(String image) {
 		this.image = image;
 	}
 
-	public byte[] getImage() {
+	public String getImage() {
 		return image;
 	}
 

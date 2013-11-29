@@ -13,12 +13,13 @@ public class HibernateTestCase {
 		HibernateUserManager manager;
 		manager = HibernateUserManager.getDefault();
 		manager.setupTable();
-		User myuser = new User();
+	
+		/*User myuser = new User();
 		myuser.setCount(0);
 		myuser.setName("TestUser");
 		myuser.setEmailAddress("bob@gmail.com");
 		myuser.setPassword("filmreel");
-		myuser.setImage(new byte[0]);
+		myuser.setImage("Unknown");
 		myuser.setLocation("Ottawa");
 		myuser.setBio("Just your everyday normal user object");
 		manager.add(myuser);
@@ -32,7 +33,7 @@ public class HibernateTestCase {
 			System.out.println("Token is good");	
 		
 		System.out.println("The users email is: " + userByToken.getEmailAddress());
-		System.out.println("The token timestamp is: " + manager.getTokenTime(userByToken.getToken()));
+		System.out.println("The token timestamp is: " + manager.getTokenTime(userByToken.getToken()));*/
 	}
 
 }

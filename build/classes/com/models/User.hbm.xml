@@ -41,7 +41,7 @@
         </property>
         
          <property name="image">
-            <column name="IMAGE" sql-type="blob" not-null="true"/>
+            <column name="IMAGE" sql-type="tinytext" not-null="true"/>
         </property>
         
         <property name="count">

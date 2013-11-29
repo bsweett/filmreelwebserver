@@ -28,12 +28,6 @@
     		<result name="UserAlreadyExists">pages/error/error-nouser.jsp</result>
   		</action>
   		
-  		<action name="update" class="com.class3601.social.actions.UpdateAction" method="execute">
-    		<result name="success">pages/success/success-update.jsp</result>
-    		<result name="fail">pages/error/error-fail.jsp</result>
-    		<result name="TokenFailed">pages/error/error-token.jsp</result>
-  		</action>
-  		
   		<action name="add" class="com.class3601.social.actions.AddFriendAction" method="execute">
     		<result name="success">pages/success/success-add.jsp</result>
     		<result name="fail">pages/error/error-fail.jsp</result>

@@ -26,6 +26,7 @@ public class GetInboxAction extends ActionSupport implements ServletRequestAware
 	public String execute() throws Exception 
 	{
 		String parameter1 = getServletRequest().getParameter(PARAMETER_1);
+		parameter1 = parameter1.replace(" ", "+");
 		String parameter2 = getServletRequest().getParameter(PARAMETER_2);
 		messageStore = new MessageStore();
 				

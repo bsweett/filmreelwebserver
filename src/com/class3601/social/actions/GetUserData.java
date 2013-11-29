@@ -2,6 +2,7 @@ package com.class3601.social.actions;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.struts2.interceptor.ServletRequestAware;
 
 import com.class3601.social.common.MessageStore;
@@ -34,6 +35,7 @@ public class GetUserData extends ActionSupport implements ServletRequestAware{
 	private HttpServletRequest request;
 	
 	public String execute() throws Exception {
+		Base64 encoder = new Base64();
 		String parameter1 = getServletRequest().getParameter(PARAMETER_1);
 		parameter1 = parameter1.replace(" ", "+");
 		messageStore = new MessageStore();
@@ -82,7 +84,7 @@ public class GetUserData extends ActionSupport implements ServletRequestAware{
 			messageStore.appendToMessage(user.getBio());
 			messageStore.appendToMessage(XML_XBIO);
 			messageStore.appendToMessage(XML_IMAGE);
-			messageStore.appendToMessage(new String(user.getImage()));
+			messageStore.appendToMessage(user.getImage());
 			messageStore.appendToMessage(XML_XIMAGE);
 			messageStore.appendToMessage(XML_MESSAGE);
 			messageStore.appendToMessage("Success");

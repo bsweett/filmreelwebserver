@@ -2,6 +2,7 @@ package com.class3601.social.actions;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.struts2.interceptor.ServletRequestAware;
 
 import com.class3601.social.common.MessageStore;
@@ -28,9 +29,12 @@ public class SaveUserData extends ActionSupport implements ServletRequestAware {
 	
 	public String execute() throws Exception 
 	{
+		Base64 decoder = new Base64();
 		String token = getServletRequest().getParameter(PARAMETER_1);
+		token = token.replace(" ", "+");
 		String name = getServletRequest().getParameter(PARAMETER_2);
 		String image = getServletRequest().getParameter(PARAMETER_3);
+		image = image.replace(" ", "+");
 		String location = getServletRequest().getParameter(PARAMETER_4);
 		String bio = getServletRequest().getParameter(PARAMETER_5);
 		messageStore = new MessageStore();
@@ -66,7 +70,7 @@ public class SaveUserData extends ActionSupport implements ServletRequestAware {
 			user.setName(name);
 			user.setLocation(location);
 			user.setBio(bio);
-			user.setImage(image.getBytes());
+			user.setImage(image);
 			manager.update(user);
 			
 			messageStore.appendToMessage(XML);

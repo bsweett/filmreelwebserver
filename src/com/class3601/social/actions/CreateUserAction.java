@@ -33,6 +33,7 @@ public class CreateUserAction extends ActionSupport implements ServletRequestAwa
 	public String execute() throws Exception {
 		String parameter1 = getServletRequest().getParameter(PARAMETER_1);
 		String  parameter2 = getServletRequest().getParameter(PARAMETER_2);
+		parameter2 = parameter2.replace(" ", "+");
 		String  parameter3 = getServletRequest().getParameter(PARAMETER_3);
 		messageStore = new MessageStore();
 		

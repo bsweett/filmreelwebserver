@@ -30,6 +30,7 @@ public class LoginAction extends ActionSupport implements ServletRequestAware {
 	{
 		String parameter1 = getServletRequest().getParameter(PARAMETER_1);
 		String  parameter2 = getServletRequest().getParameter(PARAMETER_2);
+		parameter2 = parameter2.replace(" ", "+");
 		messageStore = new MessageStore();
 				
 		if(parameter1.isEmpty() || parameter2.isEmpty()) 
