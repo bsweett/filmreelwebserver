@@ -1,5 +1,7 @@
 package com.class3601.social.actions;
 
+import java.util.Set;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts2.interceptor.ServletRequestAware;
@@ -31,6 +33,8 @@ public class LoginAction extends ActionSupport implements ServletRequestAware {
     private static String XML_IMAGE = "<image>";
     private static String XML_XIMAGE = "</image>\n";
     private static String XML_XUSER = "</user>\n";   
+    private static String XML_FRIENDS = "<friends>";  
+    private static String XML_XFRIENDS = "</friends>\n";  
 	private MessageStore messageStore;
 	private HttpServletRequest request;
 	
@@ -72,7 +76,9 @@ public class LoginAction extends ActionSupport implements ServletRequestAware {
 		{
 			user.incramentCount();
 			user.setToken(manager.generateToken(user));
-	
+			
+			Set<User> allFriends = user.getFriends();
+			
 			messageStore.appendToMessage(XML);
 			messageStore.appendToMessage(XML_USER);
 			messageStore.appendToMessage(XML_TOKEN);
@@ -96,6 +102,14 @@ public class LoginAction extends ActionSupport implements ServletRequestAware {
 			messageStore.appendToMessage(XML_MESSAGE);
 			messageStore.appendToMessage("Success");
 			messageStore.appendToMessage(XML_XMESSAGE);
+			messageStore.appendToMessage(XML_FRIENDS);
+			for (User u : allFriends) {
+				messageStore.appendToMessage(u.getEmailAddress());
+				messageStore.appendToMessage("-");
+				messageStore.appendToMessage(u.getName());
+				messageStore.appendToMessage("-");
+			}
+			messageStore.appendToMessage(XML_XFRIENDS);
 			messageStore.appendToMessage(XML_XUSER);
 			
 			manager.update(user);

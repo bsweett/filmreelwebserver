@@ -18,12 +18,12 @@ public class AddFriendAction extends ActionSupport implements ServletRequestAwar
     private static String PARAMETER_2 = "femail";
     private static String XML_1 = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\n";
     private static String XML_2 = "<user>\n";
-    private static String XML_3 = "<token>";
+    private static String XML_3 = "<email>";
     
-    private static String XML_5 = "</token>\n";
-    private static String XML_6 = "<femail>";
+    private static String XML_5 = "</email>\n";
+    private static String XML_6 = "<name>";
     
-    private static String XML_8 = "</femail>\n";
+    private static String XML_8 = "</name>\n";
     private static String XML_9 = "</user>\n";
     
 	private MessageStore messageStore;
@@ -60,10 +60,10 @@ public class AddFriendAction extends ActionSupport implements ServletRequestAwar
 			messageStore.appendToMessage(XML_1);
 			messageStore.appendToMessage(XML_2);
 			messageStore.appendToMessage(XML_3);
-			messageStore.appendToMessage("InvalidToken");
+			messageStore.appendToMessage("invalid_token");
 			messageStore.appendToMessage(XML_5);
 			messageStore.appendToMessage(XML_6);
-			messageStore.appendToMessage("InvalidToken");
+			messageStore.appendToMessage("invalid_token");
 			messageStore.appendToMessage(XML_8);
 			messageStore.appendToMessage(XML_9);
 			return "CurrentUserError";
@@ -78,10 +78,10 @@ public class AddFriendAction extends ActionSupport implements ServletRequestAwar
 				messageStore.appendToMessage(XML_1);
 				messageStore.appendToMessage(XML_2);
 				messageStore.appendToMessage(XML_3);
-				messageStore.appendToMessage("NoUserFound");
+				messageStore.appendToMessage("user_not_found");
 				messageStore.appendToMessage(XML_5);
 				messageStore.appendToMessage(XML_6);
-				messageStore.appendToMessage("NoUserFound");
+				messageStore.appendToMessage("user_not_found");
 				messageStore.appendToMessage(XML_8);
 				messageStore.appendToMessage(XML_9);
 				return "NoUserFound";
@@ -96,10 +96,10 @@ public class AddFriendAction extends ActionSupport implements ServletRequestAwar
 					messageStore.appendToMessage(XML_1);
 					messageStore.appendToMessage(XML_2);
 					messageStore.appendToMessage(XML_3);
-					messageStore.appendToMessage("AlreadyFriends");
+					messageStore.appendToMessage("already_friends");
 					messageStore.appendToMessage(XML_5);
 					messageStore.appendToMessage(XML_6);
-					messageStore.appendToMessage("AlreadyFriends");
+					messageStore.appendToMessage("already_friends");
 					messageStore.appendToMessage(XML_8);
 					messageStore.appendToMessage(XML_9);
 					return "AlreadyFriends";
@@ -116,7 +116,7 @@ public class AddFriendAction extends ActionSupport implements ServletRequestAwar
 					messageStore.appendToMessage(XML_1);
 					messageStore.appendToMessage(XML_2);
 					messageStore.appendToMessage(XML_3);
-					messageStore.appendToMessage(currentUser.getName());
+					messageStore.appendToMessage(searchForFriend.getEmailAddress());
 					messageStore.appendToMessage(XML_5);
 					messageStore.appendToMessage(XML_6);
 					messageStore.appendToMessage(searchForFriend.getName());
