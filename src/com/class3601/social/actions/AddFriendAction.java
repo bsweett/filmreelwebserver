@@ -16,16 +16,18 @@ public class AddFriendAction extends ActionSupport implements ServletRequestAwar
 	private static final long serialVersionUID = 1L;
     private static String PARAMETER_1 = "token";
     private static String PARAMETER_2 = "femail";
-    private static String XML_1 = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\n";
-    private static String XML_2 = "<user>\n";
-    private static String XML_3 = "<email>";
+    private static String XML = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\n";
+    private static String XML_USER = "<user>\n";
+    private static String XML_EMAIL = "<email>";
+    private static String XML_DATA = "</user>\n";
+    private static String XML_XDATA = "</user>\n";
+    private static String XML_XEMAIL = "</email>\n";
+    private static String XML_NAME = "<name>";
     
-    private static String XML_5 = "</email>\n";
-    private static String XML_6 = "<name>";
-    
-    private static String XML_8 = "</name>\n";
-    private static String XML_9 = "</user>\n";
-    
+    private static String XML_XNAME = "</name>\n";
+    private static String XML_XUSER = "</user>\n";
+    private static String XML_MESSAGE = "<message>n";
+    private static String XML_XMESSAGE= "</message>\n";
 	private MessageStore messageStore;
 	private HttpServletRequest request;
 	
@@ -37,15 +39,12 @@ public class AddFriendAction extends ActionSupport implements ServletRequestAwar
 		
 		if(parameter1.isEmpty() || parameter2.isEmpty()) 
 		{
-			messageStore.appendToMessage(XML_1);
-			messageStore.appendToMessage(XML_2);
-			messageStore.appendToMessage(XML_3);
+			messageStore.appendToMessage(XML);
+			messageStore.appendToMessage(XML_DATA);
+			messageStore.appendToMessage(XML_MESSAGE);
 			messageStore.appendToMessage("Fail");
-			messageStore.appendToMessage(XML_5);
-			messageStore.appendToMessage(XML_6);
-			messageStore.appendToMessage("Fail");
-			messageStore.appendToMessage(XML_8);
-			messageStore.appendToMessage(XML_9);
+			messageStore.appendToMessage(XML_XMESSAGE);
+			messageStore.appendToMessage(XML_XDATA);
 			return "fail";
 		}
 		
@@ -56,16 +55,12 @@ public class AddFriendAction extends ActionSupport implements ServletRequestAwar
 		// Check the users token
 		if(!manager.isTokenValid(parameter1))
 		{
-			System.out.println("TestUser is Null\n");
-			messageStore.appendToMessage(XML_1);
-			messageStore.appendToMessage(XML_2);
-			messageStore.appendToMessage(XML_3);
-			messageStore.appendToMessage("invalid_token");
-			messageStore.appendToMessage(XML_5);
-			messageStore.appendToMessage(XML_6);
-			messageStore.appendToMessage("invalid_token");
-			messageStore.appendToMessage(XML_8);
-			messageStore.appendToMessage(XML_9);
+			messageStore.appendToMessage(XML);
+			messageStore.appendToMessage(XML_DATA);
+			messageStore.appendToMessage(XML_MESSAGE);
+			messageStore.appendToMessage("InvalidToken");
+			messageStore.appendToMessage(XML_XMESSAGE);
+			messageStore.appendToMessage(XML_XDATA);
 			return "CurrentUserError";
 		} 
 		else 
@@ -75,15 +70,12 @@ public class AddFriendAction extends ActionSupport implements ServletRequestAwar
 			// Check if friend to add exists
 			if(searchForFriend == null)
 			{
-				messageStore.appendToMessage(XML_1);
-				messageStore.appendToMessage(XML_2);
-				messageStore.appendToMessage(XML_3);
-				messageStore.appendToMessage("user_not_found");
-				messageStore.appendToMessage(XML_5);
-				messageStore.appendToMessage(XML_6);
-				messageStore.appendToMessage("user_not_found");
-				messageStore.appendToMessage(XML_8);
-				messageStore.appendToMessage(XML_9);
+				messageStore.appendToMessage(XML);
+				messageStore.appendToMessage(XML_DATA);
+				messageStore.appendToMessage(XML_MESSAGE);
+				messageStore.appendToMessage("NoUserFound");
+				messageStore.appendToMessage(XML_XMESSAGE);
+				messageStore.appendToMessage(XML_XDATA);
 				return "NoUserFound";
 			}
 			
@@ -93,15 +85,12 @@ public class AddFriendAction extends ActionSupport implements ServletRequestAwar
 				Set<User> allFriends = currentUser.getFriends();
 				if(allFriends.contains(searchForFriend))
 				{
-					messageStore.appendToMessage(XML_1);
-					messageStore.appendToMessage(XML_2);
-					messageStore.appendToMessage(XML_3);
-					messageStore.appendToMessage("already_friends");
-					messageStore.appendToMessage(XML_5);
-					messageStore.appendToMessage(XML_6);
-					messageStore.appendToMessage("already_friends");
-					messageStore.appendToMessage(XML_8);
-					messageStore.appendToMessage(XML_9);
+					messageStore.appendToMessage(XML);
+					messageStore.appendToMessage(XML_DATA);
+					messageStore.appendToMessage(XML_MESSAGE);
+					messageStore.appendToMessage("AlreadyFriends");
+					messageStore.appendToMessage(XML_XMESSAGE);
+					messageStore.appendToMessage(XML_XDATA);
 					return "AlreadyFriends";
 				}
 				
@@ -113,15 +102,15 @@ public class AddFriendAction extends ActionSupport implements ServletRequestAwar
 				{
 					currentUser.addFriend(searchForFriend);
 					manager.update(currentUser);
-					messageStore.appendToMessage(XML_1);
-					messageStore.appendToMessage(XML_2);
-					messageStore.appendToMessage(XML_3);
+					messageStore.appendToMessage(XML);
+					messageStore.appendToMessage(XML_USER);
+					messageStore.appendToMessage(XML_EMAIL);
 					messageStore.appendToMessage(searchForFriend.getEmailAddress());
-					messageStore.appendToMessage(XML_5);
-					messageStore.appendToMessage(XML_6);
+					messageStore.appendToMessage(XML_XEMAIL);
+					messageStore.appendToMessage(XML_NAME);
 					messageStore.appendToMessage(searchForFriend.getName());
-					messageStore.appendToMessage(XML_8);
-					messageStore.appendToMessage(XML_9);
+					messageStore.appendToMessage(XML_XNAME);
+					messageStore.appendToMessage(XML_XUSER);
 					return "success";
 				}
 			}
