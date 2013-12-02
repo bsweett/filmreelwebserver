@@ -151,7 +151,6 @@ public class HibernateUserManager extends
 	 * @return
 	 */
 	public synchronized boolean update(User user) {
-		user.setToken(updateToken(user));
 		boolean result = super.update(this.encryptUser(user));	
 		return result;
 	}
@@ -560,11 +559,6 @@ public class HibernateUserManager extends
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		Calendar calendar = Calendar.getInstance();
 		return encrypt(user.getName() + "$" + user.getPassword() + "$" + dateFormat.format(calendar.getTime()));
-	}
-		
-	//Updates an existing token
-	public String updateToken(User user) {
-		return encrypt(this.getTokenName(user.getToken()) + "$" + this.getTokenPassword(user.getToken()) + "$" + this.getTokenTime(user.getToken()));
 	}
 	
 	//Have not tested this fully

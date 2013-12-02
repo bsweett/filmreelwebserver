@@ -103,7 +103,7 @@ public abstract class AbstractHibernateDatabaseManager {
 	 * @return
 	 */
 	public synchronized boolean update(Object object){
-		
+		 
 		Transaction transaction = null;
 		Session session = null;
 		boolean errorResult = false;

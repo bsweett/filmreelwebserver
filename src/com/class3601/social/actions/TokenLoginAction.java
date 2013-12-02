@@ -24,7 +24,7 @@ public class TokenLoginAction extends ActionSupport implements ServletRequestAwa
 	{
 		String parameter1 = getServletRequest().getParameter(PARAMETER_1);
 		parameter1 = parameter1.replace(" ", "+");
-		System.out.println(parameter1);
+		
 		messageStore = new MessageStore();
 				
 		if(parameter1.isEmpty()) 
