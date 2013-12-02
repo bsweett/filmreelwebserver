@@ -61,6 +61,32 @@
     		<result name="fail">pages/error/error-fail.jsp</result>
   		</action>
   		
+  	<action name="fileUploadAction" 
+	    class="com.class3601.social.actions.FileUploadAction" method="display">
+	    <result name="none">pages/fileupload.jsp</result>
+	</action>
+ 
+	<action name="resultAction" class="com.class3601.social.actions.FileUploadAction">
+	    <interceptor-ref name="exception"/>
+            <interceptor-ref name="i18n"/>
+            <interceptor-ref name="fileUpload">
+       		<param name="allowedTypes">image/jpeg</param>
+       		<param name="maximumSize">5000000</param>
+  	    </interceptor-ref> 
+            <interceptor-ref name="params">
+                <param name="excludeParams">dojo\..*,^struts\..*</param>
+            </interceptor-ref>
+            <interceptor-ref name="validation">
+                <param name="excludeMethods">input,back,cancel,browse</param>
+            </interceptor-ref>
+            <interceptor-ref name="workflow">
+                <param name="excludeMethods">input,back,cancel,browse</param>
+            </interceptor-ref>
+ 
+	    <result name="success">pages/result.jsp</result>
+	    <result name="input">pages/fileupload.jsp</result>
+ 
+	</action>
 
 	</package>
 

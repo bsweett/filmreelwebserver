@@ -73,10 +73,10 @@ public class AddFriendAction extends ActionSupport implements ServletRequestAwar
 				messageStore.appendToMessage(XML);
 				messageStore.appendToMessage(XML_DATA);
 				messageStore.appendToMessage(XML_MESSAGE);
-				messageStore.appendToMessage("NoUserFound");
+				messageStore.appendToMessage("UserNotFound");
 				messageStore.appendToMessage(XML_XMESSAGE);
 				messageStore.appendToMessage(XML_XDATA);
-				return "NoUserFound";
+				return "fail";
 			}
 			
 			// Check if you are already friends
@@ -133,6 +133,16 @@ public class AddFriendAction extends ActionSupport implements ServletRequestAwar
 	
 	private HttpServletRequest getServletRequest() {
 		return request;
+	}
+	
+	private String decodeURL(String url) {
+		url = url.replace("&quot;", "\"");
+		url = url.replace("&apos;", "'");
+		url = url.replace("&amp;", "&");
+		url = url.replace("&lt;", "<");
+		url = url.replace("&gt;", ">");
+		
+		return url;
 	}
 
 }

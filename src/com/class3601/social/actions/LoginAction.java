@@ -66,7 +66,7 @@ public class LoginAction extends ActionSupport implements ServletRequestAware {
 			messageStore.appendToMessage(XML);
 			messageStore.appendToMessage(XML_USER);
 			messageStore.appendToMessage(XML_MESSAGE);
-			messageStore.appendToMessage("NoUserFound");
+			messageStore.appendToMessage("UserNotFound");
 			messageStore.appendToMessage(XML_XMESSAGE);
 			messageStore.appendToMessage(XML_XUSER);
 			return "NoUserFound";

@@ -12,9 +12,8 @@ import com.persistence.HibernateUserManager;
 public class SendSnapAction extends ActionSupport implements ServletRequestAware {
 		
 	private static final long serialVersionUID = 1L;
-	private static String PARAMETER_1 = "token";
+	private static String PARAMETER_1 = "email";
 	private static String PARAMETER_2 = "femail";
-	private static String PARAMETER_3 = "snap";
 	private static String XML_1 = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\n";
 	private static String XML_2 = "<user>\n";
 	
@@ -35,11 +34,13 @@ public class SendSnapAction extends ActionSupport implements ServletRequestAware
 			String parameter1 = getServletRequest().getParameter(PARAMETER_1);
 			parameter1 = parameter1.replace(" ", "+");
 			String parameter2 = getServletRequest().getParameter(PARAMETER_2);
-			String parameter3 = getServletRequest().getParameter(PARAMETER_3);
+		
 			
 			messageStore = new MessageStore();
 			
-			if(parameter1.isEmpty() || parameter2.isEmpty() || parameter3.isEmpty()) 
+			System.out.println("Server says hello!");
+			
+			if(parameter1.isEmpty() || parameter2.isEmpty()) 
 			{
 				messageStore.appendToMessage(XML_1);
 				messageStore.appendToMessage(XML_2);
@@ -83,14 +84,14 @@ public class SendSnapAction extends ActionSupport implements ServletRequestAware
 					messageStore.appendToMessage(XML_1);
 					messageStore.appendToMessage(XML_2);
 					messageStore.appendToMessage(XML_3);
-					messageStore.appendToMessage("NoUserFound");
+					messageStore.appendToMessage("UserNotFound");
 					messageStore.appendToMessage(XML_4);
 					messageStore.appendToMessage(XML_5);
-					messageStore.appendToMessage("NoUserFound");
+					messageStore.appendToMessage("UserNotFound");
 					messageStore.appendToMessage(XML_6);
 					messageStore.appendToMessage(XML_7);
 					
-					return "NoUserFound";
+					return "UserNotFound";
 				}
 				
 				//Need to send the snap to the other person here

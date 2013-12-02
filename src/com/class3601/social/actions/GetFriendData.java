@@ -53,7 +53,7 @@ public class GetFriendData extends ActionSupport implements ServletRequestAware{
 		
 		HibernateUserManager manager;
 		manager = HibernateUserManager.getDefault();
-	
+		System.out.println(parameter1);
 		User user = manager.getUserByEmailAddress(parameter1);
 		
 		if(user == null)
