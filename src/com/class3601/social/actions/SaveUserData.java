@@ -33,7 +33,6 @@ public class SaveUserData extends ActionSupport implements ServletRequestAware {
 		token = token.replace(" ", "+");
 		String name = getServletRequest().getParameter(PARAMETER_2);
 		String image = getServletRequest().getParameter(PARAMETER_3);
-		image = image.replace(" ", "+");
 		String location = getServletRequest().getParameter(PARAMETER_4);
 		String bio = getServletRequest().getParameter(PARAMETER_5);
 		messageStore = new MessageStore();

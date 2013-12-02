@@ -42,7 +42,6 @@ public class LoginAction extends ActionSupport implements ServletRequestAware {
 	{
 		String username = getServletRequest().getParameter(PARAMETER_1);
 		String  password = getServletRequest().getParameter(PARAMETER_2);
-		password = password.replace(" ", "+");
 		messageStore = new MessageStore();
 				
 		if(username.isEmpty() || password.isEmpty()) 

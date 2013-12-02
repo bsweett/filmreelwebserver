@@ -65,7 +65,10 @@ public class AddFriendAction extends ActionSupport implements ServletRequestAwar
 		} 
 		else 
 		{
+			System.out.println("The friend email is" + parameter2);
 			User searchForFriend = manager.getUserByEmailAddress(parameter2);
+			User user1 = manager.getUserByEmailAddress(parameter2);
+			System.out.println("User 1 name: " + user1.getName());
 			
 			// Check if friend to add exists
 			if(searchForFriend == null)
@@ -83,6 +86,10 @@ public class AddFriendAction extends ActionSupport implements ServletRequestAwar
 			else 
 			{
 				Set<User> allFriends = currentUser.getFriends();
+				
+				User user2 = manager.getUserByEmailAddress(parameter2);
+				System.out.println("User 2 name: " + user2.getName());
+				
 				if(allFriends.contains(searchForFriend))
 				{
 					messageStore.appendToMessage(XML);
@@ -101,7 +108,16 @@ public class AddFriendAction extends ActionSupport implements ServletRequestAwar
 				else 
 				{
 					currentUser.addFriend(searchForFriend);
+					
+					User user3 = manager.getUserByEmailAddress(parameter2);
+					System.out.println("User 3 name: " + user3.getName());
+					
 					manager.update(currentUser);
+				
+					User user4 = manager.getUserByEmailAddress(parameter2);
+					System.out.println("Can you here me server!");
+					System.out.println("User 4 name: " + user4.getName());
+		
 					messageStore.appendToMessage(XML);
 					messageStore.appendToMessage(XML_USER);
 					messageStore.appendToMessage(XML_EMAIL);

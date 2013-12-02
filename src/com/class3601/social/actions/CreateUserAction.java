@@ -24,6 +24,7 @@ public class CreateUserAction extends ActionSupport implements ServletRequestAwa
 	private HttpServletRequest request;
 	
 	public String execute() throws Exception {
+		
 		String name = getServletRequest().getParameter(PARAMETER_1);
 		String  password = getServletRequest().getParameter(PARAMETER_2);
 		String  emailAddress = getServletRequest().getParameter(PARAMETER_3);
@@ -90,15 +91,5 @@ public class CreateUserAction extends ActionSupport implements ServletRequestAwa
 	
 	private HttpServletRequest getServletRequest() {
 		return request;
-	}
-	
-	private String decodeURL(String url) {
-		url = url.replace("&quot;", "\"");
-		url = url.replace("&apos;", "'");
-		url = url.replace("&amp;", "&");
-		url = url.replace("&lt;", "<");
-		url = url.replace("&gt;", ">");
-		
-		return url;
 	}
 }
