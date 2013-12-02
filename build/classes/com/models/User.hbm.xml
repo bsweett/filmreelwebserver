@@ -40,8 +40,16 @@
             <column name="BIO" sql-type="tinytext" not-null="true"/>
         </property>
         
+        <property name="gender">
+            <column name="GENDER" sql-type="varchar(1)" not-null="true"/>
+        </property>
+        
          <property name="image">
             <column name="IMAGE" sql-type="tinytext" not-null="true"/>
+        </property>
+        
+         <property name="popularity">
+            <column name="POPULARITY" sql-type="int" not-null="true"/>
         </property>
         
         <property name="count">
