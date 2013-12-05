@@ -62,15 +62,12 @@ public class AddFriendAction extends ActionSupport implements ServletRequestAwar
 			messageStore.appendToMessage("InvalidToken");
 			messageStore.appendToMessage(XML_XMESSAGE);
 			messageStore.appendToMessage(XML_XDATA);
-			System.out.println("Current User Error");
+		
 			return "CurrentUserError";
 		} 
 		else 
 		{
-			System.out.println("The friend email is" + parameter2);
 			User searchForFriend = manager.getUserByEmailAddress(parameter2);
-			User user1 = manager.getUserByEmailAddress(parameter2);
-			System.out.println("User 1 name: " + user1.getName());
 			
 			// Check if friend to add exists
 			if(searchForFriend == null)
@@ -81,7 +78,7 @@ public class AddFriendAction extends ActionSupport implements ServletRequestAwar
 				messageStore.appendToMessage("UserNotFound");
 				messageStore.appendToMessage(XML_XMESSAGE);
 				messageStore.appendToMessage(XML_XDATA);
-				System.out.println("Fail Returned");
+			
 				return "fail";
 			}
 			
@@ -89,9 +86,6 @@ public class AddFriendAction extends ActionSupport implements ServletRequestAwar
 			else 
 			{
 				Set<User> allFriends = currentUser.getFriends();
-				
-				User user2 = manager.getUserByEmailAddress(parameter2);
-				System.out.println("User 2 name: " + user2.getName());
 				
 				if(allFriends.contains(searchForFriend))
 				{
@@ -101,7 +95,7 @@ public class AddFriendAction extends ActionSupport implements ServletRequestAwar
 					messageStore.appendToMessage("AlreadyFriends");
 					messageStore.appendToMessage(XML_XMESSAGE);
 					messageStore.appendToMessage(XML_XDATA);
-					System.out.println("Already Friends");
+				
 					return "AlreadyFriends";
 				}
 				
@@ -111,19 +105,6 @@ public class AddFriendAction extends ActionSupport implements ServletRequestAwar
 						// probably need to create an inbox table to store their requests
 				else 
 				{
-					currentUser.addFriend(searchForFriend);
-					
-					User user3 = manager.getUserByEmailAddress(parameter2);
-					System.out.println("User 3 name: " + user3.getName());
-					
-					manager.update(currentUser);
-				
-					
-					if(manager.getUserByEmailAddress(parameter2) == null) {
-						System.out.println("User 4 is null");
-				
-					}
-		
 					messageStore.appendToMessage(XML);
 					messageStore.appendToMessage(XML_USER);
 					messageStore.appendToMessage(XML_EMAIL);
@@ -136,7 +117,11 @@ public class AddFriendAction extends ActionSupport implements ServletRequestAwar
 					messageStore.appendToMessage("Success");
 					messageStore.appendToMessage(XML_XMESSAGE);
 					messageStore.appendToMessage(XML_XUSER);
-					System.out.println("Success");
+					
+					currentUser.addFriend(searchForFriend);
+					manager.updateUser(currentUser);
+					manager.updateUser(searchForFriend);
+	
 					return "success";
 				}
 			}
@@ -159,16 +144,6 @@ public class AddFriendAction extends ActionSupport implements ServletRequestAwar
 	
 	private HttpServletRequest getServletRequest() {
 		return request;
-	}
-	
-	private String decodeURL(String url) {
-		url = url.replace("&quot;", "\"");
-		url = url.replace("&apos;", "'");
-		url = url.replace("&amp;", "&");
-		url = url.replace("&lt;", "<");
-		url = url.replace("&gt;", ">");
-		
-		return url;
 	}
 
 }
