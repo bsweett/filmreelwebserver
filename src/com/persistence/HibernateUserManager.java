@@ -150,7 +150,7 @@ public class HibernateUserManager extends
 	 * @param object
 	 * @return
 	 */
-	public synchronized boolean update(User user) {
+	public synchronized boolean updateUser(User user) {
 		boolean result = super.update(this.encryptUser(user));	
 		return result;
 	}

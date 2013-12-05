@@ -111,7 +111,7 @@ public class LoginAction extends ActionSupport implements ServletRequestAware {
 			messageStore.appendToMessage(XML_XFRIENDS);
 			messageStore.appendToMessage(XML_XUSER);
 			
-			manager.update(user);
+			manager.updateUser(user);
 			
 			return "success";
 		}
