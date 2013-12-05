@@ -45,6 +45,7 @@ public class AddFriendAction extends ActionSupport implements ServletRequestAwar
 			messageStore.appendToMessage("Fail");
 			messageStore.appendToMessage(XML_XMESSAGE);
 			messageStore.appendToMessage(XML_XDATA);
+			System.out.println("Fail Returned");
 			return "fail";
 		}
 		
@@ -61,6 +62,7 @@ public class AddFriendAction extends ActionSupport implements ServletRequestAwar
 			messageStore.appendToMessage("InvalidToken");
 			messageStore.appendToMessage(XML_XMESSAGE);
 			messageStore.appendToMessage(XML_XDATA);
+			System.out.println("Current User Error");
 			return "CurrentUserError";
 		} 
 		else 
@@ -79,6 +81,7 @@ public class AddFriendAction extends ActionSupport implements ServletRequestAwar
 				messageStore.appendToMessage("UserNotFound");
 				messageStore.appendToMessage(XML_XMESSAGE);
 				messageStore.appendToMessage(XML_XDATA);
+				System.out.println("Fail Returned");
 				return "fail";
 			}
 			
@@ -98,6 +101,7 @@ public class AddFriendAction extends ActionSupport implements ServletRequestAwar
 					messageStore.appendToMessage("AlreadyFriends");
 					messageStore.appendToMessage(XML_XMESSAGE);
 					messageStore.appendToMessage(XML_XDATA);
+					System.out.println("Already Friends");
 					return "AlreadyFriends";
 				}
 				
@@ -114,9 +118,11 @@ public class AddFriendAction extends ActionSupport implements ServletRequestAwar
 					
 					manager.update(currentUser);
 				
-					User user4 = manager.getUserByEmailAddress(parameter2);
-					System.out.println("Can you here me server!");
-					System.out.println("User 4 name: " + user4.getName());
+					
+					if(manager.getUserByEmailAddress(parameter2) == null) {
+						System.out.println("User 4 is null");
+				
+					}
 		
 					messageStore.appendToMessage(XML);
 					messageStore.appendToMessage(XML_USER);
@@ -126,7 +132,11 @@ public class AddFriendAction extends ActionSupport implements ServletRequestAwar
 					messageStore.appendToMessage(XML_NAME);
 					messageStore.appendToMessage(searchForFriend.getName());
 					messageStore.appendToMessage(XML_XNAME);
+					messageStore.appendToMessage(XML_MESSAGE);
+					messageStore.appendToMessage("Success");
+					messageStore.appendToMessage(XML_XMESSAGE);
 					messageStore.appendToMessage(XML_XUSER);
+					System.out.println("Success");
 					return "success";
 				}
 			}
