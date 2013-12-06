@@ -9,6 +9,7 @@
 	<!-- http://struts.apache.org/2.0.11/docs/devmode.html-->
 	<constant name="struts.devMode" value="true" />
 	<constant name="struts.custom.i18n.resources" value="global"/>
+	<constant name="struts.action.excludePattern" value="ImageServlet"/>
 
 	<package name="social-package" extends="struts-default">
 

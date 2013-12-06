@@ -1,6 +1,7 @@
 package com.class3601.social.actions;
 
 import java.io.File;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts2.ServletActionContext;
@@ -15,6 +16,10 @@ public class FileUploadAction extends ActionSupport implements ServletRequestAwa
 	private File fileUpload;
 	private String fileUploadContentType;
 	private String fileUploadFileName;
+<<<<<<< HEAD
+	private FileOutputStream outputStream;
+=======
+>>>>>>> 03b93610a8d7dde85aef3741b9fdb7747098fb3e
 	private HttpServletRequest request;
 
  
@@ -42,8 +47,14 @@ public class FileUploadAction extends ActionSupport implements ServletRequestAwa
 		this.fileUpload = fileUpload;
 	}
  
+<<<<<<< HEAD
+	public String execute() throws Exception{
+
+		System.out.println("File uploaded");
+=======
 	public String execute() throws Exception
 	{
+>>>>>>> 03b93610a8d7dde85aef3741b9fdb7747098fb3e
 		try 
 		{	
 			String filePath = ServletActionContext.getServletContext().getRealPath("/");
@@ -51,13 +62,11 @@ public class FileUploadAction extends ActionSupport implements ServletRequestAwa
 			System.out.println("FilePath = " + filePath);
 			fileToCreate = new File("/filmreel/reels/", this.fileUploadFileName);		 
 			FileUtils.copyFile(this.fileUpload, fileToCreate);
-			
 		} 
 		catch (Exception e) 
 		{
 			e.printStackTrace();
 			addActionError(e.getMessage());
-			return ERROR;
 		}
 		return SUCCESS;
  
