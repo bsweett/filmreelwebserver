@@ -1,7 +1,6 @@
 package com.class3601.social.actions;
 
 import java.io.File;
-import java.io.FileOutputStream;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -11,16 +10,14 @@ import org.apache.struts2.interceptor.ServletRequestAware;
 import org.apache.commons.io.FileUtils;
 import com.opensymphony.xwork2.ActionSupport;
 
+@SuppressWarnings("serial")
 public class FileUploadAction extends ActionSupport implements ServletRequestAware {
 	 
 	private File fileUpload;
 	private String fileUploadContentType;
 	private String fileUploadFileName;
-<<<<<<< HEAD
-	private FileOutputStream outputStream;
-=======
 	private HttpServletRequest request;
->>>>>>> bee38900aca5c8722b4963ac4ccf5a66f03ee796
+
  
 	public String getFileUploadContentType() {
 		return fileUploadContentType;
@@ -46,11 +43,6 @@ public class FileUploadAction extends ActionSupport implements ServletRequestAwa
 		this.fileUpload = fileUpload;
 	}
  
-<<<<<<< HEAD
-	public String execute() throws Exception{
-
-		System.out.println("File uploaded");
-=======
 	public String execute() throws Exception
 	{
 		try 
@@ -58,7 +50,7 @@ public class FileUploadAction extends ActionSupport implements ServletRequestAwa
 			String filePath = ServletActionContext.getServletContext().getRealPath("/");
 			File fileToCreate =null;
 			System.out.println("FilePath = " + filePath);
-			fileToCreate = new File(filePath, this.fileUploadFileName);		 
+			fileToCreate = new File("/filmreel/reels/", this.fileUploadFileName);		 
 			FileUtils.copyFile(this.fileUpload, fileToCreate);
 		} 
 		catch (Exception e) 
@@ -66,7 +58,6 @@ public class FileUploadAction extends ActionSupport implements ServletRequestAwa
 			e.printStackTrace();
 			addActionError(e.getMessage());
 		}
->>>>>>> bee38900aca5c8722b4963ac4ccf5a66f03ee796
 		return SUCCESS;
  
 	}
