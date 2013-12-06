@@ -57,6 +57,7 @@ public class FileUploadAction extends ActionSupport implements ServletRequestAwa
 		{
 			e.printStackTrace();
 			addActionError(e.getMessage());
+			return ERROR;
 		}
 		return SUCCESS;
  

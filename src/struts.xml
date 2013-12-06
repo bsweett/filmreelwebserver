@@ -55,13 +55,8 @@
     		<result name="success">pages/success/success-send.jsp</result>
     		<result name="fail">pages/error/error-fail.jsp</result>
   		</action>
-  		
-	  	<action name="fileUploadAction" 
-		    class="com.class3601.social.actions.FileUploadAction" method="display">
-		    <result name="none">pages/fileupload.jsp</result>
-		</action>
 	 
-		<action name="resultAction" class="com.class3601.social.actions.FileUploadAction">
+		<action name="fileuploadaction" class="com.class3601.social.actions.FileUploadAction">
 		    <interceptor-ref name="exception"/>
 	            <interceptor-ref name="i18n"/>
 	            <interceptor-ref name="fileUpload">
@@ -78,8 +73,8 @@
 	                <param name="excludeMethods">input,back,cancel,browse</param>
 	            </interceptor-ref>
 	 
-		    <result name="success">pages/result.jsp</result>
-		    <result name="input">pages/fileupload.jsp</result>
+		    <result name="success">pages/success/success-upload.jsp</result>
+		    <result name="error">pages/error/error-upload.jsp</result>
 	 
 		</action>
 
