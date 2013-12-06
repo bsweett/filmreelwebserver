@@ -22,6 +22,8 @@ public class User {
 	private String bio;
 	private String image;
 	private int count;
+	private char gender;
+	private int popularity;
 	private Set<User> friends = new HashSet<User>(0);
 
 	public User() {
@@ -37,6 +39,8 @@ public class User {
 		setLastUpdateTimestamp(new Timestamp(calendar.getTimeInMillis()));
 		setLastAccessedTimestamp(new Timestamp(calendar.getTimeInMillis()));
 		setToken(Messages.UNKNOWN);
+		setGender('U');
+		setPopularity(0);
 	}
 
 	public Timestamp getCreationTimestamp() {
@@ -174,5 +178,21 @@ public class User {
 
 	public String getToken() {
 		return token;
+	}
+
+	public char getGender() {
+		return gender;
+	}
+
+	public void setGender(char gender) {
+		this.gender = gender;
+	}
+
+	public int getPopularity() {
+		return popularity;
+	}
+
+	public void setPopularity(int popularity) {
+		this.popularity = popularity;
 	}
 }
