@@ -16,11 +16,9 @@ public class FileUploadAction extends ActionSupport implements ServletRequestAwa
 	private File fileUpload;
 	private String fileUploadContentType;
 	private String fileUploadFileName;
-<<<<<<< HEAD
 	private FileOutputStream outputStream;
-=======
 	private HttpServletRequest request;
->>>>>>> bee38900aca5c8722b4963ac4ccf5a66f03ee796
+
  
 	public String getFileUploadContentType() {
 		return fileUploadContentType;
@@ -46,13 +44,9 @@ public class FileUploadAction extends ActionSupport implements ServletRequestAwa
 		this.fileUpload = fileUpload;
 	}
  
-<<<<<<< HEAD
 	public String execute() throws Exception{
 
 		System.out.println("File uploaded");
-=======
-	public String execute() throws Exception
-	{
 		try 
 		{	
 			String filePath = ServletActionContext.getServletContext().getRealPath("/");
@@ -66,7 +60,6 @@ public class FileUploadAction extends ActionSupport implements ServletRequestAwa
 			e.printStackTrace();
 			addActionError(e.getMessage());
 		}
->>>>>>> bee38900aca5c8722b4963ac4ccf5a66f03ee796
 		return SUCCESS;
  
 	}
