@@ -1,7 +1,6 @@
 package com.persistence;
 
 import com.persistence.HibernateUserManager;
-import com.models.User;
 
 public class HibernateTestCase {
 

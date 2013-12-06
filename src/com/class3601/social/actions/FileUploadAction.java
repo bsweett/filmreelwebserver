@@ -1,7 +1,6 @@
 package com.class3601.social.actions;
 
 import java.io.File;
-import java.io.FileOutputStream;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -11,12 +10,12 @@ import org.apache.struts2.interceptor.ServletRequestAware;
 import org.apache.commons.io.FileUtils;
 import com.opensymphony.xwork2.ActionSupport;
 
+@SuppressWarnings("serial")
 public class FileUploadAction extends ActionSupport implements ServletRequestAware {
 	 
 	private File fileUpload;
 	private String fileUploadContentType;
 	private String fileUploadFileName;
-	private FileOutputStream outputStream;
 	private HttpServletRequest request;
 
  
@@ -44,15 +43,14 @@ public class FileUploadAction extends ActionSupport implements ServletRequestAwa
 		this.fileUpload = fileUpload;
 	}
  
-	public String execute() throws Exception{
-
-		System.out.println("File uploaded");
+	public String execute() throws Exception
+	{
 		try 
 		{	
 			String filePath = ServletActionContext.getServletContext().getRealPath("/");
 			File fileToCreate =null;
 			System.out.println("FilePath = " + filePath);
-			fileToCreate = new File(filePath, this.fileUploadFileName);		 
+			fileToCreate = new File("/filmreel/reels/", this.fileUploadFileName);		 
 			FileUtils.copyFile(this.fileUpload, fileToCreate);
 		} 
 		catch (Exception e) 
