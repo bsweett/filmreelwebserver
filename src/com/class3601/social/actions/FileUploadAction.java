@@ -1,6 +1,7 @@
 package com.class3601.social.actions;
 
 import java.io.File;
+import java.io.FileOutputStream;
 
 import com.opensymphony.xwork2.ActionSupport;
 
@@ -9,6 +10,7 @@ public class FileUploadAction extends ActionSupport{
 	private File fileUpload;
 	private String fileUploadContentType;
 	private String fileUploadFileName;
+	private FileOutputStream outputStream;
  
 	public String getFileUploadContentType() {
 		return fileUploadContentType;
@@ -35,7 +37,8 @@ public class FileUploadAction extends ActionSupport{
 	}
  
 	public String execute() throws Exception{
- 
+
+		System.out.println("File uploaded");
 		return SUCCESS;
  
 	}
