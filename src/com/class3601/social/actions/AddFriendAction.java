@@ -120,6 +120,9 @@ public class AddFriendAction extends ActionSupport implements ServletRequestAwar
 					
 					currentUser.addFriend(searchForFriend);
 					manager.updateUser(currentUser);
+					System.out.println(currentUser.getName());
+					
+					System.out.println(searchForFriend.getName());
 					manager.updateUser(searchForFriend);
 	
 					return "success";

@@ -2,13 +2,20 @@ package com.class3601.social.actions;
 
 import java.io.File;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.struts2.ServletActionContext;
+import org.apache.struts2.interceptor.ServletRequestAware;
+
+import org.apache.commons.io.FileUtils;
 import com.opensymphony.xwork2.ActionSupport;
 
-public class FileUploadAction extends ActionSupport{
+public class FileUploadAction extends ActionSupport implements ServletRequestAware {
 	 
 	private File fileUpload;
 	private String fileUploadContentType;
 	private String fileUploadFileName;
+	private HttpServletRequest request;
  
 	public String getFileUploadContentType() {
 		return fileUploadContentType;
@@ -34,14 +41,36 @@ public class FileUploadAction extends ActionSupport{
 		this.fileUpload = fileUpload;
 	}
  
-	public String execute() throws Exception{
- 
+	public String execute() throws Exception
+	{
+		try 
+		{	
+			String filePath = ServletActionContext.getServletContext().getRealPath("/");
+			File fileToCreate =null;
+			System.out.println("FilePath = " + filePath);
+			fileToCreate = new File(filePath, this.fileUploadFileName);		 
+			FileUtils.copyFile(this.fileUpload, fileToCreate);
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+			addActionError(e.getMessage());
+		}
 		return SUCCESS;
  
 	}
  
 	public String display() {
 		return NONE;
+	}
+	
+	@Override
+	public void setServletRequest(HttpServletRequest request) {
+		this.request = request;
+	}
+	
+	private HttpServletRequest getServletRequest() {
+		return request;
 	}
  
 }
