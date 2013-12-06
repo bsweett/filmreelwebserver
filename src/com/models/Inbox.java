@@ -9,6 +9,7 @@ public class Inbox {
 	private String receiverEmail;
 	private String senderEmail;
 	private String imageLocation;
+	private User user;
 
 	public Inbox() {
 		setReceiverEmail(Messages.UNKNOWN);
@@ -46,6 +47,14 @@ public class Inbox {
 	
 	public void setImageLocation(String location) {
 		this.imageLocation = location;
+	}
+	
+	public User getUser() {
+		return user;
+	}
+	
+	public void setUser(User user) {
+		this.user = user;
 	}
 	
 	

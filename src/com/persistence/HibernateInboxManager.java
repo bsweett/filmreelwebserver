@@ -34,9 +34,9 @@ private static final byte[] KEY = ";EZ¼å6WSÝÝÔ™S".getBytes();
 
 	private static final String DROP_TABLE_SQL = "drop table " + INBOX_TABLE_NAME + ";";
 	
-	private static final String CREATE_TABLE_SQL = "create table " + INBOX_TABLE_NAME + "(USER_ID_PRIMARY_KEY char(36) primary key,"
-			+ "SENDER_EMAIL tinytext, RECEIVER_EMAIL tinytext, IMAGE_LOCATION);";
-
+	private static final String CREATE_TABLE_SQL = "create table " + INBOX_TABLE_NAME + "(INBOX_ID_PRIMARY_KEY char(36) primary key,"
+			+ "SENDER_EMAIL tinytext, RECEIVER_EMAIL tinytext, IMAGE_LOCATION tinytext, USER_ID_FK char(36));";
+	
 	private static HibernateInboxManager manager;
 
 	HibernateInboxManager() {

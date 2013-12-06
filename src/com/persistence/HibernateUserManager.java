@@ -60,7 +60,7 @@ public class HibernateUserManager extends
 		+ USER_CLASS_NAME;
 	
 	private static final String CREATE_TABLE_SQL = "create table " + USER_TABLE_NAME + "(USER_ID_PRIMARY_KEY char(36) primary key,"
-			+ "TOKEN tinytext, NAME tinytext, EMAIL_ADDRESS tinytext, PASSWORD tinytext, LOCATION tinytext, BIO tinytext, GENDER varchar(1), IMAGE tinytext, POPULARITY int, REEL_COUNT int, COUNT int,"
+			+ "TOKEN tinytext, NAME tinytext, EMAIL_ADDRESS tinytext, PASSWORD tinytext, LOCATION tinytext, BIO tinytext, GENDER varchar(1), POPULARITY int, REEL_COUNT int, COUNT int,"
 			+ "CREATION_TIME timestamp, LAST_UPDATE_TIME timestamp, LAST_ACCESSED_TIME timestamp);";
 
 	private static final String CREATE_JOIN_TABLE_SQL = "create table " + USER_JOIN_TABLE_NAME + "(USER_ID char(36), FRIEND_USER_ID char(36));";

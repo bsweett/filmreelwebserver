@@ -1,5 +1,7 @@
 package com.persistence;
 
+import com.models.Inbox;
+import com.models.User;
 import com.persistence.HibernateUserManager;
 
 public class HibernateTestCase {
@@ -12,6 +14,22 @@ public class HibernateTestCase {
 		HibernateUserManager manager;
 		manager = HibernateUserManager.getDefault();
 		manager.setupTable();
+		
+		HibernateInboxManager inboxManager;
+		inboxManager = HibernateInboxManager.getDefault();
+		inboxManager.setupTable();
+		
+		
+		User user = new User();
+		user.setName("Brayden");
+		user.setToken("Testoken");
+		
+		Inbox inbox = new Inbox();
+		inbox.setReceiverEmail("braydengirard@icloud.com");
+		
+		user.addInbox(inbox);
+		
+		manager.add(user);
 
 		/*User myuser = new User();
 		myuser.setCount(0);
