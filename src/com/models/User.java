@@ -20,11 +20,12 @@ public class User {
 	private Timestamp lastAccessedTimestamp;
 	private String location;
 	private String bio;
-	private String image;
 	private int count;
 	private char gender;
 	private int popularity;
+	private int reelCount;
 	private Set<User> friends = new HashSet<User>(0);
+	private Set<Inbox> inbox = new HashSet<Inbox>(0);
 
 	public User() {
 		Calendar calendar = Calendar.getInstance();
@@ -32,8 +33,8 @@ public class User {
 		setEmailAddress(Messages.UNKNOWN);
 		setPassword(Messages.UNKNOWN);
 		setLocation(Messages.UNKNOWN);
+		setReelCount(0);
 		setBio(Messages.UNKNOWN);
-		setImage(Messages.UNKNOWN);
 		setCount(0);
 		setCreationTimestamp(new Timestamp(calendar.getTimeInMillis()));
 		setLastUpdateTimestamp(new Timestamp(calendar.getTimeInMillis()));
@@ -119,14 +120,6 @@ public class User {
 	public String getBio() {
 		return bio;
 	}
-	
-	public void setImage(String image) {
-		this.image = image;
-	}
-
-	public String getImage() {
-		return image;
-	}
 
 	public void updateFromUser(User user) {
 		setUserIdPrimarKey(user.getUserIdPrimarKey());
@@ -136,7 +129,6 @@ public class User {
 		setPassword(user.getPassword());
 		setLocation(user.getLocation());
 		setBio(user.getBio());
-		setImage(user.getImage());
 		setCreationTimestamp(user.getCreationTimestamp());
 		setLastUpdateTimestamp(user.getLastUpdateTimestamp());
 		setLastAccessedTimestamp(user.getLastAccessedTimestamp());
@@ -172,6 +164,18 @@ public class User {
 		getFriends().add(user);
 	}
 	
+	public Set<Inbox> getInbox() {
+		return inbox;
+	}
+	
+	public void setInbox(Set<Inbox> inbox) {
+		this.inbox = inbox;
+	}
+	
+	public void addInbox(Inbox inbox){
+		getInbox().add(inbox);
+	}
+	
 	public void setToken(String token){
 		this.token = token;
 	}
@@ -194,5 +198,14 @@ public class User {
 
 	public void setPopularity(int popularity) {
 		this.popularity = popularity;
+	}
+	public int getReelCount() {
+		return reelCount;
+	}
+	public void setReelCount(int reelCount) {
+		this.reelCount = reelCount;
+	}
+	public void incrementReelCount() {
+		this.reelCount = this.reelCount + 1;
 	}
 }

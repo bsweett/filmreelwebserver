@@ -13,6 +13,7 @@ CREATE DATABASE social;
 <!-- Mapping files  -->
     
 	<mapping resource="com/models/User.hbm.xml"/>
+	<mapping resource="com/models/Inbox.hbm.xml"/>
 	
 </session-factory>
 

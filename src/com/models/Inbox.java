@@ -6,18 +6,14 @@ import com.common.Messages;
 
 public class Inbox {
 	private String inboxIdPrimarKey;
-	private String email;
-	private String type;
-	private byte[] snap;
-	private String sender;
-	private String requestStatus;
+	private String receiverEmail;
+	private String senderEmail;
+	private String imageLocation;
 
 	public Inbox() {
-		setEmail(Messages.UNKNOWN);
-		setType(Messages.UNKNOWN);
-		setSnap(new byte[0]);
-		setSender(Messages.UNKNOWN);
-		setRequestStatus(Messages.UNKNOWN);
+		setReceiverEmail(Messages.UNKNOWN);
+		setSenderEmail(Messages.UNKNOWN);
+		setImageLocation(Messages.UNKNOWN);
 	}
 	
 	public String getInboxIdPrimarKey() {
@@ -28,44 +24,28 @@ public class Inbox {
 		this.inboxIdPrimarKey = inboxIdPrimarKey;
 	}
 	
-	public String getEmail() {
-		return email;
+	public String getReceiverEmail() {
+		return receiverEmail;
 	}
 	
-	public void setEmail(String email) {
-		this.email = email;
+	public void setReceiverEmail(String email) {
+		this.receiverEmail = email;
 	}
 	
-	public String getType() {
-		return type;
+	public String getSenderEmail() {
+		return senderEmail;
 	}
 	
-	public void setType(String type) {
-		this.type = type;
+	public void setSenderEmail(String email) {
+		this.senderEmail = email;
 	}
 	
-	public byte[] getSnap() {
-		return snap;
+	public String getImageLocation() {
+		return imageLocation;
 	}
 	
-	public void setSnap(byte[] snap) {
-		this.snap = snap;
-	}
-	
-	public String getSender() {
-		return sender;
-	}
-	
-	public void setSender(String sender) {
-		this.sender = sender;
-	}
-	
-	public String getRequestStatus() {
-		return requestStatus;
-	}
-	
-	public void setRequestStatus(String requestStatus) {
-		this.requestStatus = requestStatus;
+	public void setImageLocation(String location) {
+		this.imageLocation = location;
 	}
 	
 	

@@ -68,7 +68,6 @@ public class SaveUserData extends ActionSupport implements ServletRequestAware {
 			user.setName(name);
 			user.setLocation(location);
 			user.setBio(bio);
-			user.setImage(image);
 			manager.updateUser(user);
 			
 			messageStore.appendToMessage(XML);

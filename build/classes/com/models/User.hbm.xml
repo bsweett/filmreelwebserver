@@ -52,6 +52,10 @@
             <column name="POPULARITY" sql-type="int" not-null="true"/>
         </property>
         
+        <property name="reelCount">
+            <column name="REEL_COUNT" sql-type="int" not-null="true"/>
+        </property>
+        
         <property name="count">
             <column name="count" sql-type="int" not-null="true"/>
         </property>
@@ -75,6 +79,11 @@
 				happens to be another User-->
 			<many-to-many column="FRIEND_USER_ID"  class="com.models.User" />
 		</set>
+		
+      	<bag name="inbox" table="INBOX" lazy="false" cascade="all">
+    		<key column="USER_ID_FK" not-null="true"/>
+    		<one-to-many class="com.models.Inbox"/>
+		</bag>
        
     </class>
 

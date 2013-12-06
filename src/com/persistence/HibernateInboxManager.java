@@ -22,7 +22,6 @@ import org.hibernate.Transaction;
 import com.common.BookingLogger;
 import com.common.Messages;
 import com.models.Inbox;
-import com.models.User;
 
 public class HibernateInboxManager extends AbstractHibernateDatabaseManager {
 private static final byte[] KEY = ";EZ¼å6WSÝÝÔ™S".getBytes();
@@ -30,17 +29,13 @@ private static final byte[] KEY = ";EZ¼å6WSÝÝÔ™S".getBytes();
 	private static String INBOX_TABLE_NAME = "INBOX";
 	private static String INBOX_CLASS_NAME = "Inbox";
 	
-	private static String SELECT_INBOX_WITH_TOKEN_AND_TYPE = "from "
-			+ INBOX_CLASS_NAME + " as inbox where inbox.email = :email and inbox.type = :type";
+	private static String SELECT_INBOX_WITH_RECEIVER_EMAIL = "from "
+			+ INBOX_CLASS_NAME + " as inbox where inbox.receiverEmail = :receiverEmail";
 
 	private static final String DROP_TABLE_SQL = "drop table " + INBOX_TABLE_NAME + ";";
 	
-	//NO CLUE IF THIS WORKS!!!!
-	private static String SELECT_INBOX_FOR_USER = "select * from INBOX_CLASS_NAME where inbox.email = :email and inbox.type = :type";
-		
-	
 	private static final String CREATE_TABLE_SQL = "create table " + INBOX_TABLE_NAME + "(USER_ID_PRIMARY_KEY char(36) primary key,"
-			+ "TOKEN tinytext, TYPE tinytext);";
+			+ "SENDER_EMAIL tinytext, RECEIVER_EMAIL tinytext, IMAGE_LOCATION);";
 
 	private static HibernateInboxManager manager;
 
@@ -90,11 +85,10 @@ private static final byte[] KEY = ";EZ¼å6WSÝÝÔ™S".getBytes();
 		try {
 			session = HibernateUtil.getCurrentSession();
 			transaction = session.beginTransaction();
-			Query query = session.createQuery(SELECT_INBOX_WITH_TOKEN_AND_TYPE);
-		 	query.setParameter("email", inbox.getEmail());
-		 	query.setParameter("type", inbox.getType());
+			Query query = session.createQuery(SELECT_INBOX_WITH_RECEIVER_EMAIL);
+		 	query.setParameter("receiverEmail", inbox.getReceiverEmail());
 			@SuppressWarnings("unchecked")
-			List<User> users = query.list();
+			List<Inbox> users = query.list();
 
 			if (!users.isEmpty()) 
 			{
@@ -279,18 +273,18 @@ private static final byte[] KEY = ";EZ¼å6WSÝÝÔ™S".getBytes();
 	
 	
 	public Inbox encryptInbox(Inbox inbox) {
-		inbox.setType(encrypt(inbox.getType()));
-		inbox.setSender(encrypt(inbox.getSender()));
-		inbox.setRequestStatus(encrypt(inbox.getRequestStatus()));
+		inbox.setSenderEmail(encrypt(inbox.getSenderEmail()));
+		inbox.setReceiverEmail(encrypt(inbox.getReceiverEmail()));
+		inbox.setImageLocation(encrypt(inbox.getImageLocation()));
 
 		return inbox;
 	}
 	
 	public Inbox decryptInbox(Inbox inbox) {
 		
-		inbox.setType(decrypt(inbox.getType()));
-		inbox.setSender(decrypt(inbox.getSender()));
-		inbox.setRequestStatus(decrypt(inbox.getRequestStatus()));
+		inbox.setSenderEmail(decrypt(inbox.getSenderEmail()));
+		inbox.setReceiverEmail(decrypt(inbox.getReceiverEmail()));
+		inbox.setImageLocation(decrypt(inbox.getImageLocation()));
 		
 		return inbox;
 	}

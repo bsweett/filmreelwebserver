@@ -12,7 +12,7 @@ public class HibernateTestCase {
 		HibernateUserManager manager;
 		manager = HibernateUserManager.getDefault();
 		manager.setupTable();
-	
+
 		/*User myuser = new User();
 		myuser.setCount(0);
 		myuser.setName("TestUser");
