@@ -69,13 +69,13 @@
         </property>
         
         <set name="inbox" table="INBOX" lazy="false" cascade="all">
-    		<key column="USER_ID" not-null="true"/>
+    		<key column="USER_ID_FK" not-null="true"/>
     		<one-to-many class="com.models.Inbox"/>
 		</set>
 		
         <!--  http://www.dzone.com/tutorials/java/hibernate/hibernate-example/hibernate-mapping-many-to-many-1.html -->
 		<set name="friends" table="USER_FRIEND_USER" lazy="false" cascade="all">
-			<key column="USER_ID_FK" />
+			<key column="USER_ID" />
 			<!-- Note that hibernate uses the primary key of following class/table get value for column, which in this case
 				happens to be another User-->
 			<many-to-many column="FRIEND_USER_ID"  class="com.models.User" />

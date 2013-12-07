@@ -22,6 +22,7 @@ public class HibernateTestCase {
 		
 		User user = new User();
 		user.setName("Brayden");
+		user.setPassword("Hello");
 		user.setToken("Testoken");
 		
 		Inbox inbox = new Inbox();
