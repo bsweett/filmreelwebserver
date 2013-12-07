@@ -78,6 +78,10 @@ public class LoginAction extends ActionSupport implements ServletRequestAware {
 			
 			Set<User> allFriends = user.getFriends();
 			
+			for (User u : allFriends) {
+				manager.decryptUser(u);
+			}
+			
 			messageStore.appendToMessage(XML);
 			messageStore.appendToMessage(XML_USER);
 			messageStore.appendToMessage(XML_TOKEN);
@@ -107,6 +111,10 @@ public class LoginAction extends ActionSupport implements ServletRequestAware {
 			}
 			messageStore.appendToMessage(XML_XFRIENDS);
 			messageStore.appendToMessage(XML_XUSER);
+			
+			for (User u : allFriends) {
+				manager.encryptUser(u);
+			}
 			
 			manager.updateUser(user);
 			
