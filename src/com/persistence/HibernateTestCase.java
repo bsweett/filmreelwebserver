@@ -10,8 +10,8 @@ public class HibernateTestCase {
 	 */
 	public static void main(String[] args) {
 		HibernateUserManager manager;
-		//manager = HibernateUserManager.getDefault();
-		//manager.setupTable();
+		manager = HibernateUserManager.getDefault();
+		manager.setupTable();
 		
 		HibernateInboxManager inboxManager;
 		inboxManager = HibernateInboxManager.getDefault();

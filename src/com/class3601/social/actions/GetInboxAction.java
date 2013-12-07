@@ -59,7 +59,7 @@ public class GetInboxAction extends ActionSupport implements ServletRequestAware
 			messageStore.appendToMessage(XML);
 			messageStore.appendToMessage(XML_DATA);
 			messageStore.appendToMessage(XML_MESSAGE);
-			messageStore.appendToMessage("NoNewMail");
+			messageStore.appendToMessage("Fail");
 			messageStore.appendToMessage(XML_XMESSAGE);
 			messageStore.appendToMessage(XML_XDATA);
 			return "fail";

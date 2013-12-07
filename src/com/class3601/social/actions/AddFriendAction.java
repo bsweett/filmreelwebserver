@@ -26,7 +26,7 @@ public class AddFriendAction extends ActionSupport implements ServletRequestAwar
     
     private static String XML_XNAME = "</name>\n";
     private static String XML_XUSER = "</user>\n";
-    private static String XML_MESSAGE = "<message>n";
+    private static String XML_MESSAGE = "<message>";
     private static String XML_XMESSAGE= "</message>\n";
 	private MessageStore messageStore;
 	private HttpServletRequest request;
