@@ -49,7 +49,7 @@ public class FileUploadAction extends ActionSupport implements ServletRequestAwa
 			String filePath = ServletActionContext.getServletContext().getRealPath("/");
 			File fileToCreate =null;
 			System.out.println("FilePath = " + filePath);
-			fileToCreate = new File(filePath + "/WebContent/pages/images/", this.fileUploadFileName);		 
+			fileToCreate = new File("/filmreel/reels/", this.fileUploadFileName);		 
 			FileUtils.copyFile(this.fileUpload, fileToCreate);
 			
 		} 
