@@ -83,7 +83,22 @@
     		<result name="success">pages/success/success-send.jsp</result>
     		<result name="error">pages/error/error-fail.jsp</result>
   		</action>
-
+  	</package>
+  	
+  		
+  	<package name="image" namespace="/Image" extends="struts-default">
+  		<result-types>
+  			<result-type name="imageResult" class="com.class3601.image.CustomImageByteResult" />
+  		</result-types>
+  		
+  		<action name="Display" class="com.class3601.image.DisplayAction" method="execute">
+  			<result name="success">pages/display.jsp</result>
+  		</action>	
+  		
+  		<action name="ImageAction" class="com.class3601.image.ImageAction">
+  			<result name="success" type="imageResult">
+  			</result>
+  		</action>
 	</package>
 
 </struts>
