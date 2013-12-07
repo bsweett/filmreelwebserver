@@ -82,6 +82,7 @@
 		<action name="send" class="com.class3601.social.actions.SendSnapAction" method="execute">
     		<result name="success">pages/success/success-send.jsp</result>
     		<result name="error">pages/error/error-fail.jsp</result>
+    		<result name="CurrentUserError">pages/error/error-fail.jsp</result>
   		</action>
   	</package>
   	

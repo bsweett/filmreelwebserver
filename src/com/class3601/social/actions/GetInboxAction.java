@@ -82,6 +82,9 @@ public class GetInboxAction extends ActionSupport implements ServletRequestAware
 				else {
 					messageStore.appendToMessage(XML);
 					messageStore.appendToMessage(XML_DATA);
+					messageStore.appendToMessage(XML_MESSAGE);
+					messageStore.appendToMessage("Success");
+					messageStore.appendToMessage(XML_XMESSAGE);
 					messageStore.appendToMessage(XML_REEL);
 					for (Inbox i : inbox) {
 						messageStore.appendToMessage(i.getSenderEmail());
