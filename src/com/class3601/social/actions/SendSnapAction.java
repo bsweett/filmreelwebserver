@@ -69,13 +69,13 @@ public class SendSnapAction extends ActionSupport implements ServletRequestAware
 			inbox.setSenderEmail(sender.getEmailAddress());
 			inbox.setReceiverEmail(receiver.getEmailAddress());
 			inbox.setImageLocation(parameter3);
+			inbox = inboxManager.encryptInbox(inbox);
 			
 			receiver.addInbox(inbox);
-			sender.incrementReelCount();
-			
-			manager.updateUser(sender);
 			manager.updateUser(receiver);
-			inboxManager.add(inbox);
+			
+			sender.incrementReelCount();
+			manager.updateUser(sender);
 			
 			messageStore.appendToMessage(XML);
 			messageStore.appendToMessage(XML_DATA);

@@ -72,14 +72,15 @@ private static final byte[] KEY = ";EZ¼å6WSÝÝÔ™S".getBytes();
 	public synchronized boolean add(Object object) 
 	{
 		
-		System.out.println("====== IN ADDING NEW USER=======");
+		System.out.println("====== IN ADDING INBOX=======");
 		Transaction transaction = null;
 		Session session = null;
 		Inbox inbox = (Inbox) object;
 		
 		
 		//Encrpyt the users information
-		inbox = encryptInbox(inbox);
+		//inbox = encryptInbox(inbox);
+		System.out.println("Encrpted before adding " + inbox.getImageLocation() + " " + inbox.getSenderEmail());
 		
 		
 		try {
@@ -88,17 +89,20 @@ private static final byte[] KEY = ";EZ¼å6WSÝÝÔ™S".getBytes();
 			Query query = session.createQuery(SELECT_INBOX_WITH_RECEIVER_EMAIL);
 		 	query.setParameter("receiverEmail", inbox.getReceiverEmail());
 			@SuppressWarnings("unchecked")
-			List<Inbox> users = query.list();
+			List<Inbox> inboxList = query.list();
+			System.out.println("Testing");
 
-			if (!users.isEmpty()) 
+			if (!inboxList.isEmpty()) 
 			{
-				System.out.println("Adding Failed\n");
+				System.out.println("Adding Reel to DB Failed\n");
 				return false;
 			}
-				
+			
 			session.save(inbox);
+			System.out.println("session save");
+			
 			transaction.commit();
-			System.out.println("Added User\n");
+			System.out.println("Added Reel to Inbox\n");
 			return true;
 
 		} catch (HibernateException exception) {
@@ -106,8 +110,10 @@ private static final byte[] KEY = ";EZ¼å6WSÝÝÔ™S".getBytes();
 					"error.addUserToDatabase", exception);
 
 			rollback(transaction);
+			System.out.println("ROLLBACK\n");
 			return false;
 		} finally {
+			System.out.println("FINALLY\n");
 			closeSession();
 		}
 	}
@@ -277,6 +283,8 @@ private static final byte[] KEY = ";EZ¼å6WSÝÝÔ™S".getBytes();
 		inbox.setReceiverEmail(encrypt(inbox.getReceiverEmail()));
 		inbox.setImageLocation(encrypt(inbox.getImageLocation()));
 
+		System.out.println("Encrypted date :" + inbox.getImageLocation() + " " + inbox.getSenderEmail());
+		
 		return inbox;
 	}
 	
