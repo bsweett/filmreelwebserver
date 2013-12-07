@@ -23,8 +23,8 @@ public class GetInboxAction extends ActionSupport implements ServletRequestAware
     private static String XML_XMESSAGE = "</message>\n";
     private static String XML_NAME = "<name>";
     private static String XML_XNAME = "</name>\n";
-    private static String XML_SNAP = "<snap>";
-    private static String XML_XSNAP = "</snap>\n";
+    private static String XML_REEL = "<reel>";
+    private static String XML_XREEL = "</reel>\n";
     
 	private MessageStore messageStore;
 	private HttpServletRequest request;
@@ -82,7 +82,7 @@ public class GetInboxAction extends ActionSupport implements ServletRequestAware
 				else {
 					messageStore.appendToMessage(XML);
 					messageStore.appendToMessage(XML_DATA);
-					messageStore.appendToMessage(XML_SNAP);
+					messageStore.appendToMessage(XML_REEL);
 					for (Inbox i : inbox) {
 						messageStore.appendToMessage(i.getSenderEmail());
 						messageStore.appendToMessage("-");
@@ -90,7 +90,7 @@ public class GetInboxAction extends ActionSupport implements ServletRequestAware
 						messageStore.appendToMessage("-");
 						inboxManager.delete(i);
 					}
-					messageStore.appendToMessage(XML_XSNAP);
+					messageStore.appendToMessage(XML_XREEL);
 					messageStore.appendToMessage(XML_XDATA);
 					
 					
