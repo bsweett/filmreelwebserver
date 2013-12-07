@@ -87,9 +87,9 @@ public class GetInboxAction extends ActionSupport implements ServletRequestAware
 					messageStore.appendToMessage(XML_XMESSAGE);
 					messageStore.appendToMessage(XML_REEL);
 					for (Inbox i : inbox) {
-						messageStore.appendToMessage(i.getSenderEmail());
+						messageStore.appendToMessage(manager.decrypt(i.getSenderEmail()));
 						messageStore.appendToMessage("-");
-						messageStore.appendToMessage(i.getImageLocation());
+						messageStore.appendToMessage(manager.decrypt(i.getImageLocation()));
 						messageStore.appendToMessage("-");
 						inboxManager.delete(i);
 					}
