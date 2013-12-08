@@ -35,6 +35,12 @@ public class LoginAction extends ActionSupport implements ServletRequestAware {
     private static String XML_XUSER = "</user>\n";   
     private static String XML_FRIENDS = "<friends>";  
     private static String XML_XFRIENDS = "</friends>\n";  
+    private static String XML_GENDER = "<gender>";  
+    private static String XML_XGENDER = "</gender>\n";  
+    private static String XML_POP = "<pop>";  
+    private static String XML_XPOP = "</pop>\n";
+    private static String XML_REELCOUNT = "<pop>";  
+    private static String XML_XREELCOUNT = "</pop>\n";
 	private MessageStore messageStore;
 	private HttpServletRequest request;
 	
@@ -99,6 +105,15 @@ public class LoginAction extends ActionSupport implements ServletRequestAware {
 			messageStore.appendToMessage(XML_BIO);
 			messageStore.appendToMessage(user.getBio());
 			messageStore.appendToMessage(XML_XBIO);
+			messageStore.appendToMessage(XML_GENDER);
+			messageStore.appendToMessage(Character.toString(user.getGender()));
+			messageStore.appendToMessage(XML_XGENDER);
+			messageStore.appendToMessage(XML_POP);
+			messageStore.appendToMessage(Integer.toString(user.getPopularity()));
+			messageStore.appendToMessage(XML_XPOP);
+			messageStore.appendToMessage(XML_REELCOUNT);
+			messageStore.appendToMessage(Integer.toString(user.getReelCount()));
+			messageStore.appendToMessage(XML_XREELCOUNT);
 			messageStore.appendToMessage(XML_MESSAGE);
 			messageStore.appendToMessage("Success");
 			messageStore.appendToMessage(XML_XMESSAGE);

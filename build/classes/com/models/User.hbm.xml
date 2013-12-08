@@ -31,6 +31,10 @@
         <property name="password">
             <column name="PASSWORD" sql-type="tinytext" not-null="true"/>
         </property>
+        
+         <property name="displayPicturePath">
+            <column name="PATH" sql-type="tinytext" not-null="true"/>
+        </property>
        
         <property name="location">
             <column name="LOCATION" sql-type="tinytext" not-null="true"/>
@@ -53,7 +57,7 @@
         </property>
         
         <property name="count">
-            <column name="count" sql-type="int" not-null="true"/>
+            <column name="COUNT" sql-type="int" not-null="true"/>
         </property>
         
         <property name="creationTimestamp" type="timestamp">

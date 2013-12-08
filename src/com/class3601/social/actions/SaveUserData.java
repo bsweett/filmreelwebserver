@@ -13,10 +13,10 @@ import com.persistence.HibernateUserManager;
 public class SaveUserData extends ActionSupport implements ServletRequestAware {
 	private static final long serialVersionUID = 1L;
     private static String PARAMETER_1 = "token";
-    private static String PARAMETER_2 = "name";
-    private static String PARAMETER_3 = "image";
-    private static String PARAMETER_4 = "location";
-    private static String PARAMETER_5 = "bio";
+    private static String PARAMETER_2 = "location";
+    private static String PARAMETER_3 = "bio";
+    private static String PARAMETER_4 = "gender";
+    private static String PARAMETER_5 = "path";
     private static String XML = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\n";
     private static String XML_DATA = "<user>\n";
     private static String XML_XDATA = "</user>\n";
@@ -31,10 +31,11 @@ public class SaveUserData extends ActionSupport implements ServletRequestAware {
 		Base64 decoder = new Base64();
 		String token = getServletRequest().getParameter(PARAMETER_1);
 		token = token.replace(" ", "+");
-		String name = getServletRequest().getParameter(PARAMETER_2);
-		String image = getServletRequest().getParameter(PARAMETER_3);
-		String location = getServletRequest().getParameter(PARAMETER_4);
-		String bio = getServletRequest().getParameter(PARAMETER_5);
+		String location = getServletRequest().getParameter(PARAMETER_2);
+		String bio = getServletRequest().getParameter(PARAMETER_3);
+		String gender = getServletRequest().getParameter(PARAMETER_4);
+		String path = getServletRequest().getParameter(PARAMETER_5);
+
 		messageStore = new MessageStore();
 				
 		if(token.isEmpty()) 
@@ -65,9 +66,10 @@ public class SaveUserData extends ActionSupport implements ServletRequestAware {
 		
 		else 
 		{
-			user.setName(name);
 			user.setLocation(location);
 			user.setBio(bio);
+			user.setGender(gender.charAt(0));
+			user.setDisplayPicturePath(path);
 			manager.updateUser(user);
 			
 			messageStore.appendToMessage(XML);

@@ -24,6 +24,7 @@ public class User {
 	private char gender;
 	private int popularity;
 	private int reelCount;
+	private String displayPicturePath;
 	private Set<User> friends = new HashSet<User>(0);
 	private Set<Inbox> inbox = new HashSet<Inbox>(0);
 
@@ -32,6 +33,7 @@ public class User {
 		setName(Messages.UNKNOWN);
 		setEmailAddress(Messages.UNKNOWN);
 		setPassword(Messages.UNKNOWN);
+		setDisplayPicturePath("default");
 		setLocation(Messages.UNKNOWN);
 		setReelCount(0);
 		setBio(Messages.UNKNOWN);
@@ -121,25 +123,6 @@ public class User {
 		return bio;
 	}
 
-	public void updateFromUser(User user) {
-		setUserIdPrimarKey(user.getUserIdPrimarKey());
-		setToken(user.getToken());
-		setName(user.getName());
-		setEmailAddress(user.getEmailAddress());
-		setPassword(user.getPassword());
-		setLocation(user.getLocation());
-		setBio(user.getBio());
-		setCreationTimestamp(user.getCreationTimestamp());
-		setLastUpdateTimestamp(user.getLastUpdateTimestamp());
-		setLastAccessedTimestamp(user.getLastAccessedTimestamp());
-	}
-	
-	public User copy() {
-		User user = new User();
-	    user.updateFromUser(this);
-		return user;
-	}
-
 	public int getCount() {
 		return count;
 	}
@@ -162,6 +145,18 @@ public class User {
 	
 	public void addFriend(User user){
 		getFriends().add(user);
+		if(friends.size() == 0)
+			popularity = 0;
+		else if(friends.size() < 3)
+			popularity = 1;
+		else if(friends.size() < 6)
+			popularity = 2;
+		else if(friends.size() < 9)
+			popularity = 3;
+		else if(friends.size() < 12)
+			popularity = 4;
+		else
+			popularity = 5;
 	}
 	
 	public Set<Inbox> getInbox() {
@@ -207,5 +202,12 @@ public class User {
 	}
 	public void incrementReelCount() {
 		this.reelCount = this.reelCount + 1;
+	}
+	
+	public String getDisplayPicturePath() {
+		return displayPicturePath;
+	}
+	public void setDisplayPicturePath(String path) {
+		this.displayPicturePath = path;
 	}
 }
