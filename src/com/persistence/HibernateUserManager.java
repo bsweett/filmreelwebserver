@@ -567,7 +567,7 @@ public class HibernateUserManager extends
 		User user = this.getUserByToken(token);
 		
 		if(user == null) {
-			System.out.println("User is null");
+			System.out.println("User is null in token validation");
 			return false;
 		}
 		

@@ -54,7 +54,7 @@ public class AddFriendAction extends ActionSupport implements ServletRequestAwar
 		User currentUser = manager.getUserByToken(parameter1);
 		
 		// Check the users token
-		if(!manager.isTokenValid(parameter1))
+		if(manager.isTokenValid(parameter1))
 		{
 			messageStore.appendToMessage(XML);
 			messageStore.appendToMessage(XML_DATA);
@@ -72,6 +72,7 @@ public class AddFriendAction extends ActionSupport implements ServletRequestAwar
 			// Check if friend to add exists
 			if(searchForFriend == null)
 			{
+				System.out.println("User does not exist");
 				messageStore.appendToMessage(XML);
 				messageStore.appendToMessage(XML_DATA);
 				messageStore.appendToMessage(XML_MESSAGE);
