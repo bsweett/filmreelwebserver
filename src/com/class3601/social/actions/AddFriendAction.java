@@ -19,8 +19,8 @@ public class AddFriendAction extends ActionSupport implements ServletRequestAwar
     private static String XML = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\n";
     private static String XML_USER = "<user>\n";
     private static String XML_EMAIL = "<email>";
-    private static String XML_DATA = "</user>\n";
-    private static String XML_XDATA = "</user>\n";
+    private static String XML_DATA = "<data>\n";
+    private static String XML_XDATA = "</data>\n";
     private static String XML_XEMAIL = "</email>\n";
     private static String XML_NAME = "<name>";
     
@@ -54,7 +54,7 @@ public class AddFriendAction extends ActionSupport implements ServletRequestAwar
 		User currentUser = manager.getUserByToken(parameter1);
 		
 		// Check the users token
-		if(manager.isTokenValid(parameter1))
+		if(!manager.isTokenValid(parameter1))
 		{
 			messageStore.appendToMessage(XML);
 			messageStore.appendToMessage(XML_DATA);
@@ -68,7 +68,8 @@ public class AddFriendAction extends ActionSupport implements ServletRequestAwar
 		else 
 		{
 			User searchForFriend = manager.getUserByEmailAddress(parameter2);
-			
+			System.out.println("The current user email is: " + currentUser.getEmailAddress());
+			System.out.println("The friend emal address is: " + parameter2);
 			// Check if friend to add exists
 			if(searchForFriend == null)
 			{
@@ -82,7 +83,17 @@ public class AddFriendAction extends ActionSupport implements ServletRequestAwar
 			
 				return "fail";
 			}
+			else if(currentUser.getEmailAddress().equals(parameter2))
+			{
+				messageStore.appendToMessage(XML);
+				messageStore.appendToMessage(XML_DATA);
+				messageStore.appendToMessage(XML_MESSAGE);
+				messageStore.appendToMessage("AlreadyFriends");
+				messageStore.appendToMessage(XML_XMESSAGE);
+				messageStore.appendToMessage(XML_XDATA);
 			
+				return "AlreadyFriends";
+			}
 			// Check if you are already friends
 			else 
 			{

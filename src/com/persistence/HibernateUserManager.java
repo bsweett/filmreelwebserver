@@ -579,16 +579,19 @@ public class HibernateUserManager extends
 			tokenCalendar.setTime(tokenDate);
 		} catch (ParseException e) {
 				e.printStackTrace();
+				return false;
 		}
 		currentCalendar.add(Calendar.HOUR_OF_DAY, -24);
 	
 		int result = tokenCalendar.getTime().compareTo(currentCalendar.getTime());
 			
 		if(result < 0) {
+			System.out.println("Token expired due to time");
 			return false;
 		}
 		
 		else {
+			System.out.println("Token is valid!");
 			return true;
 		}
 	}
