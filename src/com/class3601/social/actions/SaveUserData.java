@@ -53,7 +53,7 @@ public class SaveUserData extends ActionSupport implements ServletRequestAware {
 		manager = HibernateUserManager.getDefault();
 
 		User user = manager.getUserByToken(token);
-		if(user == null) 
+		if(!manager.isTokenValid(token)) 
 		{
 			messageStore.appendToMessage(XML);
 			messageStore.appendToMessage(XML_DATA);
