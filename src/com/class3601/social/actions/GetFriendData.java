@@ -36,7 +36,8 @@ public class GetFriendData extends ActionSupport implements ServletRequestAware{
 	private MessageStore messageStore;
 	private HttpServletRequest request;
 	
-	public String execute() throws Exception {
+	public String execute() throws Exception 
+	{
 		String parameter1 = getServletRequest().getParameter(PARAMETER_1);
 		messageStore = new MessageStore();
 		
@@ -83,6 +84,9 @@ public class GetFriendData extends ActionSupport implements ServletRequestAware{
 			messageStore.appendToMessage(XML_BIO);
 			messageStore.appendToMessage(user.getBio());
 			messageStore.appendToMessage(XML_XBIO);
+			messageStore.appendToMessage(XML_IMAGE);
+			messageStore.appendToMessage(user.getDisplayPicturePath());
+			messageStore.appendToMessage(XML_XIMAGE);
 			messageStore.appendToMessage(XML_MESSAGE);
 			messageStore.appendToMessage("Success");
 			messageStore.appendToMessage(XML_XMESSAGE);

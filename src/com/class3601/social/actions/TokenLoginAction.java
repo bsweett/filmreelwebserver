@@ -22,48 +22,56 @@ public class TokenLoginAction extends ActionSupport implements ServletRequestAwa
 	
 	public String execute() throws Exception 
 	{
-		String parameter1 = getServletRequest().getParameter(PARAMETER_1);
-		parameter1 = parameter1.replace(" ", "+");
-		
-		messageStore = new MessageStore();
-				
-		if(parameter1.isEmpty()) 
+		try
 		{
-			messageStore.appendToMessage(XML);
-			messageStore.appendToMessage(XML_DATA);
-			messageStore.appendToMessage(XML_MESSAGE);
-			messageStore.appendToMessage("Fail");
-			messageStore.appendToMessage(XML_XMESSAGE);
-			messageStore.appendToMessage(XML_XDATA);
-			return "fail"; 
+			String parameter1 = getServletRequest().getParameter(PARAMETER_1);
+			parameter1 = parameter1.replace(" ", "+");
+			
+			messageStore = new MessageStore();
+					
+			if(parameter1.isEmpty()) 
+			{
+				messageStore.appendToMessage(XML);
+				messageStore.appendToMessage(XML_DATA);
+				messageStore.appendToMessage(XML_MESSAGE);
+				messageStore.appendToMessage("Fail");
+				messageStore.appendToMessage(XML_XMESSAGE);
+				messageStore.appendToMessage(XML_XDATA);
+				return "fail"; 
+			}
+			
+			HibernateUserManager manager;
+			manager = HibernateUserManager.getDefault();
+			System.out.println("The token is: " + parameter1);
+			
+			if(manager.isTokenValid(parameter1)) 
+			{
+				System.out.println("Token is Valid\n");
+				messageStore.appendToMessage(XML);
+				messageStore.appendToMessage(XML_DATA);
+				messageStore.appendToMessage(XML_MESSAGE);
+				messageStore.appendToMessage("Valid");
+				messageStore.appendToMessage(XML_XMESSAGE);
+				messageStore.appendToMessage(XML_XDATA);
+				return "success";
+			}
+			
+			else 
+			{
+				System.out.println("Token is inValid\n");
+				messageStore.appendToMessage(XML);
+				messageStore.appendToMessage(XML_DATA);
+				messageStore.appendToMessage(XML_MESSAGE);
+				messageStore.appendToMessage("Invalid");
+				messageStore.appendToMessage(XML_XMESSAGE);
+				messageStore.appendToMessage(XML_XDATA);
+				return "fail";
+			}
 		}
-		
-		HibernateUserManager manager;
-		manager = HibernateUserManager.getDefault();
-		System.out.println("The token is: " + parameter1);
-		
-		if(manager.isTokenValid(parameter1)) 
+		catch (Exception e)
 		{
-			System.out.println("Token is Valid\n");
-			messageStore.appendToMessage(XML);
-			messageStore.appendToMessage(XML_DATA);
-			messageStore.appendToMessage(XML_MESSAGE);
-			messageStore.appendToMessage("Valid");
-			messageStore.appendToMessage(XML_XMESSAGE);
-			messageStore.appendToMessage(XML_XDATA);
-			return "success";
-		}
-		
-		else 
-		{
-			System.out.println("Token is inValid\n");
-			messageStore.appendToMessage(XML);
-			messageStore.appendToMessage(XML_DATA);
-			messageStore.appendToMessage(XML_MESSAGE);
-			messageStore.appendToMessage("Invalid");
-			messageStore.appendToMessage(XML_XMESSAGE);
-			messageStore.appendToMessage(XML_XDATA);
-			return "fail";
+			e.printStackTrace();
+			return "error";
 		}
 	}	
 		

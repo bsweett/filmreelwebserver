@@ -31,62 +31,66 @@ public class GetInboxAction extends ActionSupport implements ServletRequestAware
 	
 	public String execute() throws Exception 
 	{
-		String token = getServletRequest().getParameter(PARAMETER_1);
-		token = token.replace(" ", "+");
-		messageStore = new MessageStore();
-				
-		if(token.isEmpty()) 
+		try
 		{
-			messageStore.appendToMessage(XML);
-			messageStore.appendToMessage(XML_DATA);
-			messageStore.appendToMessage(XML_MESSAGE);
-			messageStore.appendToMessage("Fail");
-			messageStore.appendToMessage(XML_XMESSAGE);
-			messageStore.appendToMessage(XML_XDATA);
-			return "fail"; 
-		}
-		
-		HibernateUserManager manager;
-		manager = HibernateUserManager.getDefault();
-		
-		HibernateInboxManager inboxManager;
-		inboxManager = HibernateInboxManager.getDefault();
-		
-		User user = manager.getUserByToken(token);
-		
-		if(!manager.isTokenValid(token)) 
-		{
-			messageStore.appendToMessage(XML);
-			messageStore.appendToMessage(XML_DATA);
-			messageStore.appendToMessage(XML_MESSAGE);
-			messageStore.appendToMessage("Fail");
-			messageStore.appendToMessage(XML_XMESSAGE);
-			messageStore.appendToMessage(XML_XDATA);
-			return "fail";
-		}
-		
-		else 
-		{
+			String token = getServletRequest().getParameter(PARAMETER_1);
+			token = token.replace(" ", "+");
+			messageStore = new MessageStore();
+					
+			if(token.isEmpty()) 
+			{
+				messageStore.appendToMessage(XML);
+				messageStore.appendToMessage(XML_DATA);
+				messageStore.appendToMessage(XML_MESSAGE);
+				messageStore.appendToMessage("Fail");
+				messageStore.appendToMessage(XML_XMESSAGE);
+				messageStore.appendToMessage(XML_XDATA);
+				return "fail"; 
+			}
+			
+			HibernateUserManager manager;
+			manager = HibernateUserManager.getDefault();
+			
+			HibernateInboxManager inboxManager;
+			inboxManager = HibernateInboxManager.getDefault();
+			
+			User user = manager.getUserByToken(token);
+			
+			if(!manager.isTokenValid(token)) 
+			{
+				messageStore.appendToMessage(XML);
+				messageStore.appendToMessage(XML_DATA);
+				messageStore.appendToMessage(XML_MESSAGE);
+				messageStore.appendToMessage("Fail");
+				messageStore.appendToMessage(XML_XMESSAGE);
+				messageStore.appendToMessage(XML_XDATA);
+				return "fail";
+			}
+			
+			else 
+			{
 				Set<Inbox> inbox = user.getInbox();
-				
-				if(inbox.isEmpty()) {
+					
+				if(inbox.isEmpty()) 
+				{
 					messageStore.appendToMessage(XML);
 					messageStore.appendToMessage(XML_DATA);
 					messageStore.appendToMessage(XML_MESSAGE);
 					messageStore.appendToMessage("NoNewMail");
 					messageStore.appendToMessage(XML_XMESSAGE);
 					messageStore.appendToMessage(XML_XDATA);
-					return "fail";
-					
+					return "fail";		
 				}
-				else {
+				else 
+				{
 					messageStore.appendToMessage(XML);
 					messageStore.appendToMessage(XML_DATA);
 					messageStore.appendToMessage(XML_MESSAGE);
 					messageStore.appendToMessage("Success");
 					messageStore.appendToMessage(XML_XMESSAGE);
 					messageStore.appendToMessage(XML_REEL);
-					for (Inbox i : inbox) {
+					for (Inbox i : inbox) 
+					{
 						messageStore.appendToMessage(manager.decrypt(i.getSenderEmail()));
 						messageStore.appendToMessage("-");
 						messageStore.appendToMessage(manager.decrypt(i.getImageLocation()));
@@ -95,13 +99,16 @@ public class GetInboxAction extends ActionSupport implements ServletRequestAware
 					}
 					messageStore.appendToMessage(XML_XREEL);
 					messageStore.appendToMessage(XML_XDATA);
-					
-					
 					return "success";
-				}
-	
-			
+				}	
+			}
+		} 
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return "error";
 		}
+		
 	}	
 		
 	public MessageStore getMessageStore() {

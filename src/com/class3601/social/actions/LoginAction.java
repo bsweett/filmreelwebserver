@@ -46,94 +46,101 @@ public class LoginAction extends ActionSupport implements ServletRequestAware {
 	
 	public String execute() throws Exception 
 	{
-		String username = getServletRequest().getParameter(PARAMETER_1);
-		String  password = getServletRequest().getParameter(PARAMETER_2);
-		messageStore = new MessageStore();
+		try {
+			String username = getServletRequest().getParameter(PARAMETER_1);
+			String  password = getServletRequest().getParameter(PARAMETER_2);
+			messageStore = new MessageStore();
 				
-		if(username.isEmpty() || password.isEmpty()) 
-		{
-			messageStore.appendToMessage(XML);
-			messageStore.appendToMessage(XML_USER);
-			messageStore.appendToMessage(XML_MESSAGE);
-			messageStore.appendToMessage("Fail");
-			messageStore.appendToMessage(XML_XMESSAGE);
-			messageStore.appendToMessage(XML_XUSER);
-			return "fail"; 
-		}
-		
-		HibernateUserManager manager;
-		manager = HibernateUserManager.getDefault();
-
-		User user = manager.getUserByNameAndPassword(username, password);
-		
-		if(user == null) 
-		{
-			messageStore.appendToMessage(XML);
-			messageStore.appendToMessage(XML_USER);
-			messageStore.appendToMessage(XML_MESSAGE);
-			messageStore.appendToMessage("UserNotFound");
-			messageStore.appendToMessage(XML_XMESSAGE);
-			messageStore.appendToMessage(XML_XUSER);
-			return "NoUserFound";
-		}
-		
-		else 
-		{
-			user.incramentCount();
-			user.setToken(manager.generateToken(user));
-			
-			Set<User> allFriends = user.getFriends();
-			
-			for (User u : allFriends) {
-				manager.decryptUser(u);
+			if(username.isEmpty() || password.isEmpty()) 
+			{
+				messageStore.appendToMessage(XML);
+				messageStore.appendToMessage(XML_USER);
+				messageStore.appendToMessage(XML_MESSAGE);
+				messageStore.appendToMessage("Fail");
+				messageStore.appendToMessage(XML_XMESSAGE);
+				messageStore.appendToMessage(XML_XUSER);
+				return "fail"; 
 			}
 			
-			messageStore.appendToMessage(XML);
-			messageStore.appendToMessage(XML_USER);
-			messageStore.appendToMessage(XML_TOKEN);
-			messageStore.appendToMessage(user.getToken());
-			messageStore.appendToMessage(XML_XTOKEN);
-			messageStore.appendToMessage(XML_NAME);
-			messageStore.appendToMessage(user.getName());
-			messageStore.appendToMessage(XML_XNAME);
-			messageStore.appendToMessage(XML_EMAIL);
-			messageStore.appendToMessage(user.getEmailAddress());
-			messageStore.appendToMessage(XML_XEMAIL);
-			messageStore.appendToMessage(XML_LOCATION);
-			messageStore.appendToMessage(user.getLocation());
-			messageStore.appendToMessage(XML_XLOCATION);
-			messageStore.appendToMessage(XML_BIO);
-			messageStore.appendToMessage(user.getBio());
-			messageStore.appendToMessage(XML_XBIO);
-			messageStore.appendToMessage(XML_GENDER);
-			messageStore.appendToMessage(Character.toString(user.getGender()));
-			messageStore.appendToMessage(XML_XGENDER);
-			messageStore.appendToMessage(XML_POP);
-			messageStore.appendToMessage(Integer.toString(user.getPopularity()));
-			messageStore.appendToMessage(XML_XPOP);
-			messageStore.appendToMessage(XML_REELCOUNT);
-			messageStore.appendToMessage(Integer.toString(user.getReelCount()));
-			messageStore.appendToMessage(XML_XREELCOUNT);
-			messageStore.appendToMessage(XML_MESSAGE);
-			messageStore.appendToMessage("Success");
-			messageStore.appendToMessage(XML_XMESSAGE);
-			messageStore.appendToMessage(XML_FRIENDS);
-			for (User u : allFriends) {
-				messageStore.appendToMessage(u.getEmailAddress());
-				messageStore.appendToMessage("-");
-				messageStore.appendToMessage(u.getName());
-				messageStore.appendToMessage("-");
-			}
-			messageStore.appendToMessage(XML_XFRIENDS);
-			messageStore.appendToMessage(XML_XUSER);
+			HibernateUserManager manager;
+			manager = HibernateUserManager.getDefault();
+	
+			User user = manager.getUserByNameAndPassword(username, password);
 			
-			for (User u : allFriends) {
-				manager.encryptUser(u);
+			if(user == null) 
+			{
+				messageStore.appendToMessage(XML);
+				messageStore.appendToMessage(XML_USER);
+				messageStore.appendToMessage(XML_MESSAGE);
+				messageStore.appendToMessage("UserNotFound");
+				messageStore.appendToMessage(XML_XMESSAGE);
+				messageStore.appendToMessage(XML_XUSER);
+				return "NoUserFound";
 			}
 			
-			manager.updateUser(user);
-			
-			return "success";
+			else 
+			{
+				user.incramentCount();
+				user.setToken(manager.generateToken(user));
+				
+				Set<User> allFriends = user.getFriends();
+				
+				for (User u : allFriends) {
+					manager.decryptUser(u);
+				}
+				
+				messageStore.appendToMessage(XML);
+				messageStore.appendToMessage(XML_USER);
+				messageStore.appendToMessage(XML_TOKEN);
+				messageStore.appendToMessage(user.getToken());
+				messageStore.appendToMessage(XML_XTOKEN);
+				messageStore.appendToMessage(XML_NAME);
+				messageStore.appendToMessage(user.getName());
+				messageStore.appendToMessage(XML_XNAME);
+				messageStore.appendToMessage(XML_EMAIL);
+				messageStore.appendToMessage(user.getEmailAddress());
+				messageStore.appendToMessage(XML_XEMAIL);
+				messageStore.appendToMessage(XML_LOCATION);
+				messageStore.appendToMessage(user.getLocation());
+				messageStore.appendToMessage(XML_XLOCATION);
+				messageStore.appendToMessage(XML_BIO);
+				messageStore.appendToMessage(user.getBio());
+				messageStore.appendToMessage(XML_XBIO);
+				messageStore.appendToMessage(XML_GENDER);
+				messageStore.appendToMessage(Character.toString(user.getGender()));
+				messageStore.appendToMessage(XML_XGENDER);
+				messageStore.appendToMessage(XML_POP);
+				messageStore.appendToMessage(Integer.toString(user.getPopularity()));
+				messageStore.appendToMessage(XML_XPOP);
+				messageStore.appendToMessage(XML_REELCOUNT);
+				messageStore.appendToMessage(Integer.toString(user.getReelCount()));
+				messageStore.appendToMessage(XML_XREELCOUNT);
+				messageStore.appendToMessage(XML_MESSAGE);
+				messageStore.appendToMessage("Success");
+				messageStore.appendToMessage(XML_XMESSAGE);
+				messageStore.appendToMessage(XML_FRIENDS);
+				for (User u : allFriends) {
+					messageStore.appendToMessage(u.getEmailAddress());
+					messageStore.appendToMessage("-");
+					messageStore.appendToMessage(u.getName());
+					messageStore.appendToMessage("-");
+				}
+				messageStore.appendToMessage(XML_XFRIENDS);
+				messageStore.appendToMessage(XML_XUSER);
+				
+				for (User u : allFriends) {
+					manager.encryptUser(u);
+				}
+				
+				manager.updateUser(user);
+				
+				return "success";
+			}
+		} 
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return "error";
 		}
 	}	
 		

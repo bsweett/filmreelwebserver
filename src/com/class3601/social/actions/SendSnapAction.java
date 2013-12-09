@@ -25,66 +25,75 @@ public class SendSnapAction extends ActionSupport implements ServletRequestAware
 	private MessageStore messageStore;
 	private HttpServletRequest request;
 	
-	public String execute() throws Exception {
-		String parameter1 = getServletRequest().getParameter(PARAMETER_1);
-		String parameter2 = getServletRequest().getParameter(PARAMETER_2);
-		String parameter3 = getServletRequest().getParameter(PARAMETER_3);
-		messageStore = new MessageStore();
-		
-		if(parameter1.isEmpty() || parameter2.isEmpty() || parameter3.isEmpty()) 
+	public String execute() throws Exception 
+	{
+		try
 		{
-			messageStore.appendToMessage(XML);
-			messageStore.appendToMessage(XML_DATA);
-			messageStore.appendToMessage(XML_MESSAGE);
-			messageStore.appendToMessage("Fail");
-			messageStore.appendToMessage(XML_XMESSAGE);
-			messageStore.appendToMessage(XML_XDATA);
-			return "fail";
+			String parameter1 = getServletRequest().getParameter(PARAMETER_1);
+			String parameter2 = getServletRequest().getParameter(PARAMETER_2);
+			String parameter3 = getServletRequest().getParameter(PARAMETER_3);
+			messageStore = new MessageStore();
+			
+			if(parameter1.isEmpty() || parameter2.isEmpty() || parameter3.isEmpty()) 
+			{
+				messageStore.appendToMessage(XML);
+				messageStore.appendToMessage(XML_DATA);
+				messageStore.appendToMessage(XML_MESSAGE);
+				messageStore.appendToMessage("Fail");
+				messageStore.appendToMessage(XML_XMESSAGE);
+				messageStore.appendToMessage(XML_XDATA);
+				return "fail";
+			}
+			
+			HibernateUserManager manager;
+			manager = HibernateUserManager.getDefault();
+			
+			HibernateInboxManager inboxManager;
+			inboxManager = HibernateInboxManager.getDefault();
+			
+			User receiver = manager.getUserByEmailAddress(parameter2);
+			User sender = manager.getUserByEmailAddress(parameter1);
+			
+			// Check the users token
+			if(receiver == null || sender == null)
+			{
+				messageStore.appendToMessage(XML);
+				messageStore.appendToMessage(XML_DATA);
+				messageStore.appendToMessage(XML_MESSAGE);
+				messageStore.appendToMessage("UserNotFound");
+				messageStore.appendToMessage(XML_XMESSAGE);
+				messageStore.appendToMessage(XML_XDATA);
+			
+				return "CurrentUserError";
+			} 
+			else 
+			{
+				Inbox inbox = new Inbox();
+				inbox.setSenderEmail(sender.getEmailAddress());
+				inbox.setReceiverEmail(receiver.getEmailAddress());
+				inbox.setImageLocation(parameter3);
+				inbox = inboxManager.encryptInbox(inbox);
+				
+				receiver.addInbox(inbox);
+				manager.updateUser(receiver);
+				
+				sender.incrementReelCount();
+				manager.updateUser(sender);
+				
+				messageStore.appendToMessage(XML);
+				messageStore.appendToMessage(XML_DATA);
+				messageStore.appendToMessage(XML_MESSAGE);
+				messageStore.appendToMessage("Success");
+				messageStore.appendToMessage(XML_XMESSAGE);
+				messageStore.appendToMessage(XML_XDATA);
+		
+				return "success";
+			}
 		}
-		
-		HibernateUserManager manager;
-		manager = HibernateUserManager.getDefault();
-		
-		HibernateInboxManager inboxManager;
-		inboxManager = HibernateInboxManager.getDefault();
-		
-		User receiver = manager.getUserByEmailAddress(parameter2);
-		User sender = manager.getUserByEmailAddress(parameter1);
-		
-		// Check the users token
-		if(receiver == null || sender == null)
+		catch (Exception e)
 		{
-			messageStore.appendToMessage(XML);
-			messageStore.appendToMessage(XML_DATA);
-			messageStore.appendToMessage(XML_MESSAGE);
-			messageStore.appendToMessage("UserNotFound");
-			messageStore.appendToMessage(XML_XMESSAGE);
-			messageStore.appendToMessage(XML_XDATA);
-		
-			return "CurrentUserError";
-		} 
-		else 
-		{
-			Inbox inbox = new Inbox();
-			inbox.setSenderEmail(sender.getEmailAddress());
-			inbox.setReceiverEmail(receiver.getEmailAddress());
-			inbox.setImageLocation(parameter3);
-			inbox = inboxManager.encryptInbox(inbox);
-			
-			receiver.addInbox(inbox);
-			manager.updateUser(receiver);
-			
-			sender.incrementReelCount();
-			manager.updateUser(sender);
-			
-			messageStore.appendToMessage(XML);
-			messageStore.appendToMessage(XML_DATA);
-			messageStore.appendToMessage(XML_MESSAGE);
-			messageStore.appendToMessage("Success");
-			messageStore.appendToMessage(XML_XMESSAGE);
-			messageStore.appendToMessage(XML_XDATA);
-	
-			return "success";
+			e.printStackTrace();
+			return "error";
 		}
 	}	
 		

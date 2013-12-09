@@ -28,57 +28,64 @@ public class SaveUserData extends ActionSupport implements ServletRequestAware {
 	
 	public String execute() throws Exception 
 	{
-		Base64 decoder = new Base64();
-		String token = getServletRequest().getParameter(PARAMETER_1);
-		token = token.replace(" ", "+");
-		String location = getServletRequest().getParameter(PARAMETER_2);
-		String bio = getServletRequest().getParameter(PARAMETER_3);
-		String gender = getServletRequest().getParameter(PARAMETER_4);
-		String path = getServletRequest().getParameter(PARAMETER_5);
-
-		messageStore = new MessageStore();
-				
-		if(token.isEmpty()) 
+		try
 		{
-			messageStore.appendToMessage(XML);
-			messageStore.appendToMessage(XML_DATA);
-			messageStore.appendToMessage(XML_MESSAGE);
-			messageStore.appendToMessage("Fail");
-			messageStore.appendToMessage(XML_XMESSAGE);
-			messageStore.appendToMessage(XML_XDATA);
-			return "fail"; 
-		}
-		
-		HibernateUserManager manager;
-		manager = HibernateUserManager.getDefault();
-
-		User user = manager.getUserByToken(token);
-		if(user == null) 
-		{
-			messageStore.appendToMessage(XML);
-			messageStore.appendToMessage(XML_DATA);
-			messageStore.appendToMessage(XML_MESSAGE);
-			messageStore.appendToMessage("UserNotFound");
-			messageStore.appendToMessage(XML_XMESSAGE);
-			messageStore.appendToMessage(XML_XDATA);
-			return "NoUserFound";
-		}
-		
-		else 
-		{
-			user.setLocation(location);
-			user.setBio(bio);
-			user.setGender(gender.charAt(0));
-			user.setDisplayPicturePath(path);
-			manager.updateUser(user);
+			String token = getServletRequest().getParameter(PARAMETER_1);
+			token = token.replace(" ", "+");
+			String location = getServletRequest().getParameter(PARAMETER_2);
+			String bio = getServletRequest().getParameter(PARAMETER_3);
+			String gender = getServletRequest().getParameter(PARAMETER_4);
+			String path = getServletRequest().getParameter(PARAMETER_5);
+	
+			messageStore = new MessageStore();
+					
+			if(token.isEmpty()) 
+			{
+				messageStore.appendToMessage(XML);
+				messageStore.appendToMessage(XML_DATA);
+				messageStore.appendToMessage(XML_MESSAGE);
+				messageStore.appendToMessage("Fail");
+				messageStore.appendToMessage(XML_XMESSAGE);
+				messageStore.appendToMessage(XML_XDATA);
+				return "fail"; 
+			}
 			
-			messageStore.appendToMessage(XML);
-			messageStore.appendToMessage(XML_DATA);
-			messageStore.appendToMessage(XML_MESSAGE);
-			messageStore.appendToMessage("Success");
-			messageStore.appendToMessage(XML_XMESSAGE);
-			messageStore.appendToMessage(XML_XDATA);
-			return "success";
+			HibernateUserManager manager;
+			manager = HibernateUserManager.getDefault();
+	
+			User user = manager.getUserByToken(token);
+			if(user == null) 
+			{
+				messageStore.appendToMessage(XML);
+				messageStore.appendToMessage(XML_DATA);
+				messageStore.appendToMessage(XML_MESSAGE);
+				messageStore.appendToMessage("UserNotFound");
+				messageStore.appendToMessage(XML_XMESSAGE);
+				messageStore.appendToMessage(XML_XDATA);
+				return "NoUserFound";
+			}
+			
+			else 
+			{
+				user.setLocation(location);
+				user.setBio(bio);
+				user.setGender(gender.charAt(0));
+				user.setDisplayPicturePath(path);
+				manager.updateUser(user);
+				
+				messageStore.appendToMessage(XML);
+				messageStore.appendToMessage(XML_DATA);
+				messageStore.appendToMessage(XML_MESSAGE);
+				messageStore.appendToMessage("Success");
+				messageStore.appendToMessage(XML_XMESSAGE);
+				messageStore.appendToMessage(XML_XDATA);
+				return "success";
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return "error";
 		}
 	}	
 		

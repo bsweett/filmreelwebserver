@@ -21,12 +21,14 @@
     		<result name="success">pages/success/success-login.jsp</result>
     		<result name="fail">pages/error/error-fail.jsp</result>
     		<result name="NoUserFound">pages/error/error-nouser.jsp</result>
+    		<result name="error">pages/error/error-fail.jsp</result>
   		</action>
   		
   		<action name="create" class="com.class3601.social.actions.CreateUserAction" method="execute">
     		<result name="success">pages/success/success-create.jsp</result>
     		<result name="fail">pages/error/error-fail.jsp</result>
     		<result name="UserAlreadyExists">pages/error/error-nouser.jsp</result>
+    		<result name="error">pages/error/error-fail.jsp</result>
   		</action>
   		
   		<action name="add" class="com.class3601.social.actions.AddFriendAction" method="execute">
@@ -35,26 +37,31 @@
     		<result name="NoUserFound">pages/error/error-nouser.jsp</result>
     		<result name="AlreadyFriends">pages/error/error-AlreadyFriends.jsp</result>
     		<result name="CurrentUserError">pages/error/error-nouser.jsp</result>
+    		<result name="error">pages/error/error-fail.jsp</result>
   		</action>
   		
   		<action name="tokenlogin" class="com.class3601.social.actions.TokenLoginAction" method="execute">
     		<result name="success">pages/success/success-send.jsp</result>
     		<result name="fail">pages/error/error-fail.jsp</result>
+    		<result name="error">pages/error/error-fail.jsp</result>
   		</action>
   		
   		<action name="getfrienddata" class="com.class3601.social.actions.GetFriendData" method="execute">
     		<result name="success">pages/success/success-send.jsp</result>
     		<result name="fail">pages/error/error-fail.jsp</result>
+    		<result name="error">pages/error/error-fail.jsp</result>
   		</action>
   		
   		<action name="saveuserdata" class="com.class3601.social.actions.SaveUserData" method="execute">
     		<result name="success">pages/success/success-send.jsp</result>
     		<result name="fail">pages/error/error-fail.jsp</result>
+    		<result name="error">pages/error/error-fail.jsp</result>
   		</action>
   		
   		<action name="getinbox" class="com.class3601.social.actions.GetInboxAction" method="execute">
     		<result name="success">pages/success/success-send.jsp</result>
     		<result name="fail">pages/error/error-fail.jsp</result>
+    		<result name="error">pages/error/error-fail.jsp</result>
   		</action>
 	 
 		<action name="fileuploadaction" class="com.class3601.social.actions.FileUploadAction">
@@ -83,6 +90,7 @@
     		<result name="success">pages/success/success-send.jsp</result>
     		<result name="error">pages/error/error-fail.jsp</result>
     		<result name="CurrentUserError">pages/error/error-fail.jsp</result>
+    		 <result name="error">pages/error/error-fail.jsp</result>
   		</action>
   	</package>
   	
