@@ -39,8 +39,8 @@ public class LoginAction extends ActionSupport implements ServletRequestAware {
     private static String XML_XGENDER = "</gender>\n";  
     private static String XML_POP = "<pop>";  
     private static String XML_XPOP = "</pop>\n";
-    private static String XML_REELCOUNT = "<pop>";  
-    private static String XML_XREELCOUNT = "</pop>\n";
+    private static String XML_REELCOUNT = "<reelcount>";  
+    private static String XML_XREELCOUNT = "</reelcount>\n";
 	private MessageStore messageStore;
 	private HttpServletRequest request;
 	

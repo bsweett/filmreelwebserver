@@ -1,10 +1,13 @@
 package com.class3601.social.actions;
 
+import java.util.Set;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts2.interceptor.ServletRequestAware;
 
 import com.class3601.social.common.MessageStore;
+import com.models.User;
 import com.opensymphony.xwork2.ActionSupport;
 import com.persistence.HibernateUserManager;
 
@@ -16,6 +19,28 @@ public class TokenLoginAction extends ActionSupport implements ServletRequestAwa
     private static String XML_XDATA = "</data>";
     private static String XML_MESSAGE = "<message>";
     private static String XML_XMESSAGE = "</message>\n";
+    private static String XML_USER = "<user>\n";
+    private static String XML_TOKEN = "<token>";
+    private static String XML_XTOKEN = "</token>\n";
+    private static String XML_NAME = "<name>";
+    private static String XML_XNAME = "</name>\n";
+    private static String XML_EMAIL = "<email>";
+    private static String XML_XEMAIL = "</email>\n";
+    private static String XML_LOCATION = "<location>";
+    private static String XML_XLOCATION = "</location>\n";
+    private static String XML_BIO = "<bio>";
+    private static String XML_XBIO = "</bio>\n";
+    private static String XML_IMAGE = "<image>";
+    private static String XML_XIMAGE = "</image>\n";
+    private static String XML_XUSER = "</user>\n";   
+    private static String XML_FRIENDS = "<friends>";  
+    private static String XML_XFRIENDS = "</friends>\n";  
+    private static String XML_GENDER = "<gender>";  
+    private static String XML_XGENDER = "</gender>\n";  
+    private static String XML_POP = "<pop>";  
+    private static String XML_XPOP = "</pop>\n";
+    private static String XML_REELCOUNT = "<reelcount>";  
+    private static String XML_XREELCOUNT = "</reelcount>\n";
     
 	private MessageStore messageStore;
 	private HttpServletRequest request;
@@ -43,16 +68,64 @@ public class TokenLoginAction extends ActionSupport implements ServletRequestAwa
 			HibernateUserManager manager;
 			manager = HibernateUserManager.getDefault();
 			System.out.println("The token is: " + parameter1);
-			
+			User user = manager.getUserByToken(parameter1);
 			if(manager.isTokenValid(parameter1)) 
 			{
-				System.out.println("Token is Valid\n");
+				user.incramentCount();
+				user.setToken(manager.generateToken(user));
+				
+				Set<User> allFriends = user.getFriends();
+				
+				for (User u : allFriends) {
+					manager.decryptUser(u);
+				}
+				
 				messageStore.appendToMessage(XML);
-				messageStore.appendToMessage(XML_DATA);
+				messageStore.appendToMessage(XML_USER);
+				messageStore.appendToMessage(XML_TOKEN);
+				messageStore.appendToMessage(user.getToken());
+				messageStore.appendToMessage(XML_XTOKEN);
+				messageStore.appendToMessage(XML_NAME);
+				messageStore.appendToMessage(user.getName());
+				messageStore.appendToMessage(XML_XNAME);
+				messageStore.appendToMessage(XML_EMAIL);
+				messageStore.appendToMessage(user.getEmailAddress());
+				messageStore.appendToMessage(XML_XEMAIL);
+				messageStore.appendToMessage(XML_LOCATION);
+				messageStore.appendToMessage(user.getLocation());
+				messageStore.appendToMessage(XML_XLOCATION);
+				messageStore.appendToMessage(XML_BIO);
+				messageStore.appendToMessage(user.getBio());
+				messageStore.appendToMessage(XML_XBIO);
+				messageStore.appendToMessage(XML_GENDER);
+				messageStore.appendToMessage(Character.toString(user.getGender()));
+				messageStore.appendToMessage(XML_XGENDER);
+				messageStore.appendToMessage(XML_POP);
+				messageStore.appendToMessage(Integer.toString(user.getPopularity()));
+				messageStore.appendToMessage(XML_XPOP);
+				messageStore.appendToMessage(XML_REELCOUNT);
+				messageStore.appendToMessage(Integer.toString(user.getReelCount()));
+				messageStore.appendToMessage(XML_XREELCOUNT);
 				messageStore.appendToMessage(XML_MESSAGE);
 				messageStore.appendToMessage("Valid");
 				messageStore.appendToMessage(XML_XMESSAGE);
-				messageStore.appendToMessage(XML_XDATA);
+				messageStore.appendToMessage(XML_FRIENDS);
+				
+				for (User u : allFriends) {
+					messageStore.appendToMessage(u.getEmailAddress());
+					messageStore.appendToMessage("-");
+					messageStore.appendToMessage(u.getName());
+					messageStore.appendToMessage("-");
+				}
+				messageStore.appendToMessage(XML_XFRIENDS);
+				messageStore.appendToMessage(XML_XUSER);
+				
+				for (User u : allFriends) {
+					manager.encryptUser(u);
+				}
+				
+				manager.updateUser(user);
+				
 				return "success";
 			}
 			
