@@ -7,7 +7,7 @@
 
 <struts>
 	<!-- http://struts.apache.org/2.0.11/docs/devmode.html-->
-	<constant name="struts.devMode" value="true" />
+	<constant name="struts.devMode" value="false" />
 	<constant name="struts.custom.i18n.resources" value="global"/>
 	<constant name="struts.action.excludePattern" value="ImageServlet"/>
 
@@ -17,21 +17,21 @@
 			<result>pages/welcome/index.jsp</result>
 		</action>
   		
-  		<action name="login" class="com.class3601.social.actions.LoginAction" method="execute">
+  		<action name="login" class="com.filmreel.actions.LoginAction" method="execute">
     		<result name="success">pages/success/success-login.jsp</result>
     		<result name="fail">pages/error/error-fail.jsp</result>
     		<result name="NoUserFound">pages/error/error-nouser.jsp</result>
     		<result name="error">pages/error/error-fail.jsp</result>
   		</action>
   		
-  		<action name="create" class="com.class3601.social.actions.CreateUserAction" method="execute">
+  		<action name="create" class="com.filmreel.actions.CreateUserAction" method="execute">
     		<result name="success">pages/success/success-create.jsp</result>
     		<result name="fail">pages/error/error-fail.jsp</result>
     		<result name="UserAlreadyExists">pages/error/error-nouser.jsp</result>
     		<result name="error">pages/error/error-fail.jsp</result>
   		</action>
   		
-  		<action name="add" class="com.class3601.social.actions.AddFriendAction" method="execute">
+  		<action name="add" class="com.filmreel.actions.AddFriendAction" method="execute">
     		<result name="success">pages/success/success-add.jsp</result>
     		<result name="fail">pages/error/error-fail.jsp</result>
     		<result name="NoUserFound">pages/error/error-nouser.jsp</result>
@@ -40,31 +40,31 @@
     		<result name="error">pages/error/error-fail.jsp</result>
   		</action>
   		
-  		<action name="tokenlogin" class="com.class3601.social.actions.TokenLoginAction" method="execute">
+  		<action name="tokenlogin" class="com.filmreel.actions.TokenLoginAction" method="execute">
     		<result name="success">pages/success/success-send.jsp</result>
     		<result name="fail">pages/error/error-fail.jsp</result>
     		<result name="error">pages/error/error-fail.jsp</result>
   		</action>
   		
-  		<action name="getfrienddata" class="com.class3601.social.actions.GetFriendData" method="execute">
+  		<action name="getfrienddata" class="com.filmreel.actions.GetFriendData" method="execute">
     		<result name="success">pages/success/success-send.jsp</result>
     		<result name="fail">pages/error/error-fail.jsp</result>
     		<result name="error">pages/error/error-fail.jsp</result>
   		</action>
   		
-  		<action name="saveuserdata" class="com.class3601.social.actions.SaveUserData" method="execute">
+  		<action name="saveuserdata" class="com.filmreel.actions.SaveUserData" method="execute">
     		<result name="success">pages/success/success-send.jsp</result>
     		<result name="fail">pages/error/error-fail.jsp</result>
     		<result name="error">pages/error/error-fail.jsp</result>
   		</action>
   		
-  		<action name="getinbox" class="com.class3601.social.actions.GetInboxAction" method="execute">
+  		<action name="getinbox" class="com.filmreel.actions.GetInboxAction" method="execute">
     		<result name="success">pages/success/success-send.jsp</result>
     		<result name="fail">pages/error/error-fail.jsp</result>
     		<result name="error">pages/error/error-fail.jsp</result>
   		</action>
 	 
-		<action name="fileuploadaction" class="com.class3601.social.actions.FileUploadAction">
+		<action name="fileuploadaction" class="com.filmreel.actions.FileUploadAction">
 		    <interceptor-ref name="exception"/>
 	            <interceptor-ref name="i18n"/>
 	            <interceptor-ref name="fileUpload">
@@ -86,28 +86,12 @@
 	 
 		</action>
 		
-		<action name="send" class="com.class3601.social.actions.SendSnapAction" method="execute">
+		<action name="send" class="com.filmreel.actions.SendReelAction" method="execute">
     		<result name="success">pages/success/success-send.jsp</result>
     		<result name="error">pages/error/error-fail.jsp</result>
     		<result name="CurrentUserError">pages/error/error-fail.jsp</result>
     		 <result name="error">pages/error/error-fail.jsp</result>
   		</action>
   	</package>
-  	
-  		
-  	<package name="image" namespace="/Image" extends="struts-default">
-  		<result-types>
-  			<result-type name="imageResult" class="com.class3601.image.CustomImageByteResult" />
-  		</result-types>
-  		
-  		<action name="Display" class="com.class3601.image.DisplayAction" method="execute">
-  			<result name="success">pages/display.jsp</result>
-  		</action>	
-  		
-  		<action name="ImageAction" class="com.class3601.image.ImageAction">
-  			<result name="success" type="imageResult">
-  			</result>
-  		</action>
-	</package>
 
 </struts>
