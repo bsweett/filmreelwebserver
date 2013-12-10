@@ -129,6 +129,9 @@ public class LoginAction extends ActionSupport implements ServletRequestAware {
 				messageStore.appendToMessage(XML_REELCOUNT);
 				messageStore.appendToMessage(Integer.toString(user.getReelCount()));
 				messageStore.appendToMessage(XML_XREELCOUNT);
+				messageStore.appendToMessage(XML_IMAGE);
+				messageStore.appendToMessage(user.getDisplayPicturePath());
+				messageStore.appendToMessage(XML_XIMAGE);
 				messageStore.appendToMessage(XML_MESSAGE);
 				messageStore.appendToMessage("Success");
 				messageStore.appendToMessage(XML_XMESSAGE);

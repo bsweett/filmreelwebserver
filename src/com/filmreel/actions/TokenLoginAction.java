@@ -127,6 +127,9 @@ public class TokenLoginAction extends ActionSupport implements ServletRequestAwa
 				messageStore.appendToMessage(XML_REELCOUNT);
 				messageStore.appendToMessage(Integer.toString(user.getReelCount()));
 				messageStore.appendToMessage(XML_XREELCOUNT);
+				messageStore.appendToMessage(XML_IMAGE);
+				messageStore.appendToMessage(user.getDisplayPicturePath());
+				messageStore.appendToMessage(XML_XIMAGE);
 				messageStore.appendToMessage(XML_MESSAGE);
 				messageStore.appendToMessage("Valid");
 				messageStore.appendToMessage(XML_XMESSAGE);

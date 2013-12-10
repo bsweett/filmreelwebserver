@@ -12,8 +12,8 @@ CREATE DATABASE social;
 <session-factory>
 <!-- Mapping files  -->
     
-	<mapping resource="com/models/User.hbm.xml"/>
-	<mapping resource="com/models/Inbox.hbm.xml"/>
+	<mapping resource="com/filmreel/models/User.hbm.xml"/>
+	<mapping resource="com/filmreel/models/Inbox.hbm.xml"/>
 	
 </session-factory>
 
