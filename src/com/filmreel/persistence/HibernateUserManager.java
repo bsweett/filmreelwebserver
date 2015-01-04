@@ -14,7 +14,9 @@ import java.util.List;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -44,7 +46,8 @@ import com.filmreel.models.User;
 public class HibernateUserManager extends
 		AbstractHibernateDatabaseManager {
 
-	private static final byte[] KEY = ";EZ¼å6WSÝÝÔ™S".getBytes();
+	//private static final byte[] KEY = ";EZï¿½ï¿½6WSï¿½ï¿½Ô™S".getBytes();
+	private static final byte[] KEY = "D865FBCA32A5F&^0".getBytes();
 	
 	private static String USER_TABLE_NAME = "USER";
 	private static String USER_JOIN_TABLE_NAME = "USER_FRIEND_USER";

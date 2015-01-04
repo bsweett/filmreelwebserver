@@ -7,13 +7,26 @@
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/org.eclipse.swt_3.100.0.v4233d.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/org.eclipse.swt.cocoa.macosx_3.100.0.v4233d.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/org.apache.commons.codec_1.3.0.v201101211617.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7">
+	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.eclipse.jst.server.tomcat.runtimeTarget/Apache Tomcat v7.0"/>
+	<classpathentry kind="lib" path="/Applications/eclipse/plugins/org.eclipse.core.runtime_3.10.0.v20140318-2214.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Applications/eclipse/plugins/org.eclipse.core.resources.source_3.9.0.v20140514-1307.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.eclipse.jst.server.tomcat.runtimeTarget/Apache Tomcat v8.0">
+		<attributes>
+			<attribute name="owner.project.facets" value="jst.web"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/Java SE 7 [1.7.0.71]">
 		<attributes>
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.eclipse.jst.server.tomcat.runtimeTarget/Apache Tomcat v7.0"/>
-	<classpathentry kind="lib" path="/Applications/eclipse/plugins/org.eclipse.core.resources_3.8.0.v20120522-2034.jar"/>
-	<classpathentry kind="lib" path="/Applications/eclipse/plugins/org.eclipse.core.runtime_3.8.0.v20120521-2346.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

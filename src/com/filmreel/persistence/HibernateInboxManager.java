@@ -34,7 +34,8 @@ import com.filmreel.models.Inbox;
 
 public class HibernateInboxManager extends AbstractHibernateDatabaseManager {
 	
-	private static final byte[] KEY = ";EZ¼å6WSÝÝÔ™S".getBytes();
+	//private static final byte[] KEY = ";EZï¿½ï¿½6WSï¿½ï¿½Ô™S".getBytes();
+	private static final byte[] KEY = "D865FBCA32A5F&^0".getBytes();
 	
 	private static String INBOX_TABLE_NAME = "INBOX";
 	private static String INBOX_CLASS_NAME = "Inbox";
